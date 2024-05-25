@@ -147,10 +147,10 @@ curl https://webappname.azurewebsites.net/version
 
 ```
 
-- **Now change version number from *1.0* to *1.1* (remember to save VersionController)
+- **Now change version number from *1.0* to *1.1* (remember to save VersionController)**
   - Run the deployment script again
   - Once deployed call the *version endpoint* again. Notice that there might be some downtime before the new deployed version comes into effect
 
-  
+
 
 
