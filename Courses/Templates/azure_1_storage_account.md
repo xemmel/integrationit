@@ -17,3 +17,28 @@
   - **Review + create**
   - **Create** 
 
+- Create two new **Containers**
+  - Go to the newly create *Storage Account* Left side menu -> **Data storage** -> **Containers**
+   - 1 *Container* name: **mypubliccontainer** with **Anonymous access level** set to **Blob (ano..read acces..)**
+   - 1 *Container* name: **myprivatecontainer** with **Anonymous access level** set to **Private (no an...)**
+
+- Upload a test file to both *Containers*
+  - Create a test txt-file in a local folder, make sure that it contains some text
+  - For each container do the following
+    - Select the *container* by clicking on it
+    - Click the **Upload** icon
+    - Either drag the file or *Browse for files*
+    - Click **Upload** if you are overwriting an existing file/blob be sure to select *Overwrite ..*
+    - Click the uploaded *blob* and copy the **URL** into clipboard
+    - Do an **HTTP GET** on the *URL* this can be done in an *Internet Browser*. By using *Postman*. By using the *Rest Client* Extension for *Visual Studio Code* or powershell/bash
+
+```powershell
+
+curl URL
+
+```
+
+  - Note: you should get the blob content from the public container and an *error (not a correct error)* from the private container
+
+  
+
