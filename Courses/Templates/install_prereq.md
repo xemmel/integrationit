@@ -1,10 +1,25 @@
-### Chocolatey
+- Run in *Powershell* as Administrator
+### Install Chocolatey
 
 ```powershell
 
 
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
+
+```
+
+### Install Powershell Core (should be used over classic Powershell)
+
+```powershell
+
+### Chocolatey
+
+choco install powershell-core -y
+
+### winget 
+
+winget install Microsoft.PowerShell --silent
 
 ```
 
