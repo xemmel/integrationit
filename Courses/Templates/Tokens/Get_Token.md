@@ -5,10 +5,10 @@
 Clear-Host;
 
 ### Replace
-$tenantId = "551c586d-a82d-4526-b186-d061ceaa589e";
-$audience = "api://198feb13-f899-4138-988a-e2724fd4555e";
-$clientId = "056f00c8-5203-407d-9abf-a6cf9218017e";
-$clientSecret = "tYH8Q~QE9cG5eFiLol0EMOlZUGZXKZg1FynLidCm";
+$tenantId = "replace";
+$audience = "replace";
+$clientId = "replace"; ## App Client Id
+$clientSecret = "replace";
 
 
 $scope = "$($audience)/.default";
