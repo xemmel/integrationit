@@ -67,5 +67,5 @@ curl https://localhost:7039/weatherforecast
       - Leave the default suggested value and **Save**
     - Goto *Manage/App roles*
       - Create two roles *reader* and *writer*
- ![Create API Roles](/Images/entra_create_api_role.png.png)
+ ![Create API Roles](/Images/entra_create_api_role.png)
 
