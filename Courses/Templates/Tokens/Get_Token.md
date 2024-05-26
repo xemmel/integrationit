@@ -1,4 +1,5 @@
 - Run the following script in *Powershell* replace everything needed
+- Once you have the token inside the *Powershell variable* **$token** you can examine the token by decoding it [Decode Token](/Courses/Templates/Tokens/Decode_token.md)
 
 ```powershell
 

@@ -166,7 +166,26 @@ curl https://localhost:7039/weatherforecast -H "Authorization: Bearer $token"
   - Notice that you still get *401*
   - Decode your token, See [Decode Token](/Courses/Templates/Tokens/Decode_Token.md) 
     - Notice that no *scopes* nor *roles* are set
-  - 
+  
+  - Add a reader role to the *App App Registration*
+    - Goto the *App App Registration* (course[init]app)
+      - Under *API Permissions* select **+ Add a permission**
+      - Choose *My APIs* tab and select your *API registration*
+      - Select *reader* and **Add permissions**
+      - Select **Grant admin consent for Default Directory** (Note: at your own company, you might not be able to do this)
+  - Get new token and decode it (it might take a minute or two before the role is present in the token claims)
+  - Once the token contains the role *reader* call the api again, this time it should work
 
+  - Decorate *weatherforecast* so that only token with *writer* role can access it
 
+```csharp
+
+[ApiController]
+[Authorize(Roles = "writer")]
+[Route("[controller]")]
+
+```
+  - Run the api again
+  - Once again *401* since the token do not hold the correct *Role claim*
+  - In *Entra* give the app *App Registration* the writer role, get new token, verify that it now has two roles *reader* and *writer* and call again, now it should work
     
