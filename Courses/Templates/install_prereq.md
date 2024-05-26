@@ -75,3 +75,29 @@ choco install azure-functions-core-tools -y
 winget install  Microsoft.Azure.FunctionsCoreTools --silent
 
 ```
+
+### Nuget feed fix
+
+```powershell
+
+dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
+
+```
+
+### Git set names/email
+
+```powershell
+
+git config --global user.email "lacour@gmail.com"
+git config --global user.name "Morten la Cour"
+
+```
+
+### Git set aliases
+
+```powershell
+
+git config --global alias.xlist 'log --graph --all --oneline --decorate'
+git config --global alias.add-commit '!git add -A && git commit'
+
+```

@@ -13,7 +13,7 @@
   - Give the *Storage Account* a unique name
   - Leave all other settings on the **Basics** tab as is
   - Go to the **Advanced** tab and select *Allow enabling anonymous access on individual containers*
-   ![Create Resource Group](/Images/ChooseAdvancedSA.png)
+   ![Choose Advanced](/Images/ChooseAdvancedSA.png)
   - **Review + create**
   - **Create** 
 
