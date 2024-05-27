@@ -176,3 +176,24 @@ func start
 
   - **OK** and **Apply** Note that the *Function App* might restart
   - Now within a minute or so, your message should be picked up from the *queue*
+
+- Send to an *Output Queue*
+  - In your *Storage Account* create a new *Queue* **finalqueue**
+  - In the *ProcessMessage.cs* file make these changes
+
+```csharp
+
+        [Function(nameof(ProcessMessage))]
+        [QueueOutput("finalqueue", Connection = "storageConnection")]
+        public string Run([QueueTrigger("startprocess", Connection = "storageConnection")] QueueMessage message)
+        {
+            _logger.LogInformation($"C# Queue trigger function processed: {message.MessageText}");
+            string processedMessage = $"The message: {message.MessageText} has been processed";
+            return processedMessage;
+        }
+
+```
+  - Save and publish the function app to *Azure* again
+  - Add another message to the *startprocess* queue and verify that it is picked up and that a new message is sent to the *finalqueue* queue
+
+  
