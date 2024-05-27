@@ -157,5 +157,7 @@ func start
 'AzureWebJobsstorageConnection' does not exist.
 
 ```
-    - This is because the *Connection String* placed in the *local.settings.json* is not published to *Azure* and we need to set up in the *Azure Function App* 
-    - In the *Function App* go to **Settings/Environment Variables** 
+
+
+  - This is because the *Connection String* placed in the *local.settings.json* is not published to *Azure* and we need to set up in the *Azure Function App* 
+  - In the *Function App* go to **Settings/Environment Variables** 
