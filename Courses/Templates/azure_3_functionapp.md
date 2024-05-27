@@ -161,3 +161,18 @@ func start
 
   - This is because the *Connection String* placed in the *local.settings.json* is not published to *Azure* and we need to set up in the *Azure Function App* 
   - In the *Function App* go to **Settings/Environment Variables** 
+  - Under **Advanced edit** insert the following *json object* with your *connection string*
+
+```json
+
+  {
+    "name": "storageConnection",
+    "value": "DefaultEndpointsProtocol=https....",
+    "slotSetting": false
+  }
+
+
+```
+
+  - **OK** and **Apply** Note that the *Function App* might restart
+  - Now within a minute or so, your message should be picked up from the *queue*
