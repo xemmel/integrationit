@@ -1,0 +1,169 @@
+
+
+(Policies, Security / role assignment (RBAC))
+
+ - Management Groups  
+     - Subscriptions (-)
+         - Resource Group
+           - Resource
+              - (Sub Resource) (Security only)
+
+
+
+
+portal.azure.com  (Azure)   ("Arbejde" i Azure)
+    script:    Azure Powershell "*"
+               Azure CLI
+
+    RÅ REST API
+    DevOps/Pipelines
+
+entra.microsoft.com
+
+
+dgitestuser@integration-it.com
+
+
+
+
+
+
+------------------
+
+Role Assignments
+
+   Who? (Entity  User/Account/Group)
+   What? (Role   Reader, Owner, Data speficic)
+   Where? (scope) 
+
+-----------------
+
+Resource Group (ID)
+
+/SubscriptionId/ResourceGroupName
+/SubscriptionId2/ResourceGroupName
+
+
+Resource (ID)
+
+/SubId/RGName/Type/ResourceName
+
+
+/SubTestId/MyVMS/VM/VM1
+/SubTestId/MyVMS/DISK/VM1
+
+
+/SubProdId/MyVMS/VM/VM1
+/SubTestId/MyVMS/VM/VM2
+
+
+/SubTestId/MyVMS/VM/VM1 :-(
+
+
+
+dgidkstoragetest
+
+dgidkstorageprod
+
+
+
+
+HTTP GET
+
+https://dgimlctest.blob.core.windows.net/mypubliccontainer/test.txt
+
+
+https://dgimlctest.blob.core.windows.net/myprivatecontainer/test.txt
+
+
+
+sv=2022-11-02&ss=b&srt=co&sp=riytfx&se=2024-06-04T16:48:46Z&st=2024-06-03T08:48:46Z&spr=https&sig=ovOq7HPupESKOHBTXpmPgdyWcWpP0DisBU%2BYGVVLr6I%3D
+
+
+sv=2022-11-02
+&ss=b
+&srt=co
+&sp=riytfx
+&se=2024-06-04T16:48:46Z
+&st=2024-06-03T08:48:46Z
+&spr=https
+
+&sig=ovOq7HPupESKOHBTXpmPgdyWcWpP0DisBU%2BYGVVLr6I%3D
+
+
+
+
+
+GET https://management.azure.com/subscriptions/9bc198aa-089c-4698-a7ef-8af058b48d90/resourcegroups?api-version=2021-04-01
+
+
+-----------------------------------------
+
+Service Account (Service Principal)
+     App Registration (Entra) (UserName/Password)
+     Enterprise App (Role Assignments)
+
+
+
+-----------------
+
+Service Account
+
+dgitestserviceaccount
+
+
+ClientId (UserName) : d4b76d4f-7276-4ec6-902c-dce779939c20
+TenantId : 551c586d-a82d-4526-b186-d061ceaa589e
+Secret: N5n8Q~BZSAQ35N3gOCrjC0Wjz3LfACfHodtTWcw8
+
+
+---------------------------------
+
+.NET APP
+
+//Read from Storage Account (RBAC)
+
+//Submit MQ (Service Bus) (RBAC)
+
+Service Account (Secret)
+
+
+
+
+Logic App              ->  Storage Account
+(Consuming Resource)       (Data)
+
+
+----------------------------------------------
+
+Managed Identity (Passwordless get token)
+
+System                           |    User
+
+1-1 Azure Resource AD "User"           Selvstændig Azure Resource
+                                       M-M
+
+
+
+
+
+PostMan -> Logic App
+
+             -> Call HTTP Endpoint     (dummy)
+         -> Send Response
+
+
+
+jwt.ms
+
+requestbin.com
+
+
+
+
+
+
+
+
+
+
