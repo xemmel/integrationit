@@ -28,3 +28,15 @@ module appInsight 'Common/applicationInsight.bicep' = {
   }
 }
 
+//Storage Account
+
+var storageAccountName = 'st${appName}${env}'
+module storageAccount 'Common/storageAccount.bicep' = {
+  name: 'storageAccount'
+  params: {
+    accountName: storageAccountName
+    location: location
+  }
+}
+
+
