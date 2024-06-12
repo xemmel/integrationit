@@ -21,3 +21,13 @@ az deployment group create `
 
 
 ```
+
+### Deploy function app code
+
+```powershell
+
+### In code/functionapp1 folder
+
+func azure functionapp publish "func-${appName}-${env}"
+
+```
