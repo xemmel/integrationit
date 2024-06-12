@@ -39,4 +39,15 @@ module storageAccount 'Common/storageAccount.bicep' = {
   }
 }
 
+//App Service Plan
+
+var planName = 'asp-${appName}-${env}'
+module plan 'Common/appServicePlan.bicep' = {
+  name: 'plan'
+  params: {
+    appServicePlanName: planName
+    location: location
+  }
+}
+
 
