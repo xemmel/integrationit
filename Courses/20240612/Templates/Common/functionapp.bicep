@@ -4,12 +4,15 @@ param functionAppName string
 param location string
 param planId string
 param appInsightConnectionString string
-param storageAccountConnectionString string // :-(
+param storageAccountName string
 
 resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: planId
     siteConfig: {
@@ -20,8 +23,8 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           value: appInsightConnectionString
         }
         {
-          name: 'AzureWebJobsStorage'
-          value: storageAccountConnectionString
+          name: 'AzureWebJobsStorage__accountName'
+          value: storageAccountName
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
@@ -35,3 +38,5 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
     }
   }
 }
+
+output principalId string = functionApp.identity.principalId

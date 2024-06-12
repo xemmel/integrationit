@@ -59,7 +59,16 @@ module functionApp 'Common/functionapp.bicep' = {
     functionAppName: functionAppName
     location: location
     planId: plan.outputs.id
-    storageAccountConnectionString: storageAccount.outputs.connectionString
+    storageAccountName: storageAccount.outputs.name
   }
 }
 
+//Add Role Assignment (Storage Blob Data Owner)
+//RoleId: b7e6dc6d-f1e8-4753-8033-0f276bb0955b
+module rbacDataOwner 'Common/roleAssignment.bicep' = {
+  name: 'rbacDataOwner'
+  params: {
+    identityId: functionApp.outputs.principalId
+    roleId: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+  }
+}
