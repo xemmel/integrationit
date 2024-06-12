@@ -50,4 +50,16 @@ module plan 'Common/appServicePlan.bicep' = {
   }
 }
 
+//Function App
+var functionAppName = 'func-${appName}-${env}'
+module functionApp 'Common/functionapp.bicep' = {
+  name: 'functionApp'
+  params: {
+    appInsightConnectionString: appInsight.outputs.connectionString
+    functionAppName: functionAppName
+    location: location
+    planId: plan.outputs.id
+    storageAccountConnectionString: storageAccount.outputs.connectionString
+  }
+}
 

@@ -14,7 +14,7 @@ az group create --name "rg-${appName}-${env}" --location $location;
 
 az deployment group create `
     --resource-group "rg-${appName}-${env}" `
-    --template-file .\Templates\functionapp.bicep `
+    --template-file .\Templates\serviceProvider.bicep `
     --parameters appName=$appName `
     --parameters env=$env
 ;
