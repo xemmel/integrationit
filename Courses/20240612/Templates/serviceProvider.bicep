@@ -3,6 +3,7 @@ targetScope = 'resourceGroup'
 param appName string
 param env string
 param retention int = 93
+param vaultIdentity string
 param location string = resourceGroup().location
 
 //Log Analytics Workspace
@@ -46,7 +47,7 @@ module vault 'Common/keyVault.bicep' = {
   params: {
     location: location
     vaultName: vaultName
-    adminGroupId: '3f6abe16-efc8-4b34-9fd7-8d917de9c592'
+    adminGroupId: vaultIdentity
     purgeProtection: true
     softDelete: false
   }

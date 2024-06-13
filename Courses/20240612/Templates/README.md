@@ -7,6 +7,7 @@
 $appName = "dktvmlc";
 $env = "test";
 $location = "northeurope";
+$vaultIdentity = "....";
 
 
 ### Create Resource Group
@@ -16,7 +17,8 @@ az deployment group create `
     --resource-group "rg-${appName}-${env}" `
     --template-file .\Templates\serviceProvider.bicep `
     --parameters appName=$appName `
-    --parameters env=$env
+    --parameters env=$env `
+    --parameters vaultIdentity=$vaultIdentity
 ;
 
 
