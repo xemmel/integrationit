@@ -5,6 +5,11 @@ param location string
 param planId string
 param appInsightConnectionString string
 param storageAccountName string
+param keyVaultName string
+param secretName string
+
+
+var passwordKeyVaultReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${secretName})'
 
 resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   name: functionAppName
@@ -33,6 +38,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: 'dotnet'
+        }
+        {
+          name: 'password'
+          value: passwordKeyVaultReference
         }
       ]
     }

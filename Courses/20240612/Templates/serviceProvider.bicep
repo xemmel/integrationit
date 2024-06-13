@@ -39,6 +39,19 @@ module storageAccount 'Common/storageAccount.bicep' = {
   }
 }
 
+//Key Vault 
+var vaultName = 'kv-${appName}-${env}'
+module vault 'Common/keyVault.bicep' = {
+  name: 'vault'
+  params: {
+    location: location
+    vaultName: vaultName
+    adminGroupId: '3f6abe16-efc8-4b34-9fd7-8d917de9c592'
+    purgeProtection: true
+    softDelete: false
+  }
+}
+
 //App Service Plan
 
 var planName = 'asp-${appName}-${env}'
@@ -60,8 +73,14 @@ module functionApp 'Common/functionapp.bicep' = {
     location: location
     planId: plan.outputs.id
     storageAccountName: storageAccount.outputs.name
+    keyVaultName: vault.outputs.name
+    secretName: 'thesecret'
   }
 }
+
+
+
+//Manual entry of secret
 
 //Add Role Assignment (Storage Blob Data Owner)
 //RoleId: b7e6dc6d-f1e8-4753-8033-0f276bb0955b
@@ -72,3 +91,16 @@ module rbacDataOwner 'Common/roleAssignment.bicep' = {
     roleId: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
   }
 }
+
+//Add Role Assignment (Key Vault Secrets User)
+//RoleId: 4633458b-17de-408a-b874-0445c86b69e6 
+//Resource Group ok, if each domain has its own Vault
+module rbacSecretReader 'Common/roleAssignment.bicep' = {
+  name: 'rbacSecretReader'
+  params: {
+    identityId: functionApp.outputs.principalId
+    roleId: '4633458b-17de-408a-b874-0445c86b69e6'
+  }
+}
+
+

@@ -30,4 +30,15 @@ az deployment group create `
 
 func azure functionapp publish "func-${appName}-${env}"
 
+
+func azure functionapp list-functions "func-${appName}-${env}" --show-keys
+
+```
+
+### Remove Resource Group
+
+```powershell
+
+az group delete --name "rg-${appName}-${env}" --yes --no-wait
+
 ```
