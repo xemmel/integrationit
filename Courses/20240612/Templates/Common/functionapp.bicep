@@ -9,7 +9,7 @@ param keyVaultName string
 param secretName string
 param serviceBusConnectionAlias string
 param serviceBusNamespaceName string
-
+param alwaysOn bool = true
 
 var passwordKeyVaultReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${secretName})'
 
@@ -23,7 +23,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   properties: {
     serverFarmId: planId
     siteConfig: {
-      alwaysOn: true
+      alwaysOn: alwaysOn
       appSettings: [
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
