@@ -42,3 +42,20 @@ func azure functionapp list-functions "func-${appName}-${env}" --show-keys
 az group delete --name "rg-${appName}-${env}" --yes --no-wait
 
 ```
+
+
+#### Add your own local.settings
+
+local.settings.json
+
+```json
+
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    }
+}
+
+```
