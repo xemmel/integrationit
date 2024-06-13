@@ -7,6 +7,8 @@ param appInsightConnectionString string
 param storageAccountName string
 param keyVaultName string
 param secretName string
+param serviceBusConnectionAlias string
+param serviceBusNamespaceName string
 
 
 var passwordKeyVaultReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${secretName})'
@@ -42,6 +44,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'password'
           value: passwordKeyVaultReference
+        }
+        {
+          name: '${serviceBusConnectionAlias}__fullyQualifiedNamespace'
+          value: '${serviceBusNamespaceName}.servicebus.windows.net'
         }
       ]
     }

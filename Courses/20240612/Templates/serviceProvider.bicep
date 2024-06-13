@@ -64,6 +64,36 @@ module plan 'Common/appServicePlan.bicep' = {
   }
 }
 
+
+
+//Service Bus
+var serviceBusNamespaceName = 'sbns-${appName}-${env}'
+module serviceBus 'Common/serviceBusNamespace.bicep' = {
+  name: 'serviceBus'
+  params: {
+    location: location
+    namespaceName: serviceBusNamespaceName
+  }
+}
+
+//myqueue Queue
+module myqueueQueue 'Common/serviceBusQueue.bicep' = {
+  name: 'myqueueQueue'
+  params: {
+    queueName: 'myqueue'
+    serviceBusNamespace: serviceBus.outputs.name
+  }
+}
+
+//myoutputqueue Queue
+module myoutputqueueQueue 'Common/serviceBusQueue.bicep' = {
+  name: 'myoutputqueueQueue'
+  params: {
+    queueName: 'myoutputqueue'
+    serviceBusNamespace: serviceBus.outputs.name
+  }
+}
+
 //Function App
 var functionAppName = 'func-${appName}-${env}'
 module functionApp 'Common/functionapp.bicep' = {
@@ -76,6 +106,8 @@ module functionApp 'Common/functionapp.bicep' = {
     storageAccountName: storageAccount.outputs.name
     keyVaultName: vault.outputs.name
     secretName: 'thesecret'
+    serviceBusConnectionAlias: 'thesbconnection'
+    serviceBusNamespaceName: serviceBus.outputs.name
   }
 }
 
@@ -101,6 +133,17 @@ module rbacSecretReader 'Common/roleAssignment.bicep' = {
   params: {
     identityId: functionApp.outputs.principalId
     roleId: '4633458b-17de-408a-b874-0445c86b69e6'
+  }
+}
+
+//Add Role Assignment (Azure Service Bus Data Owner)
+//RoleId: 090c5cfd-751d-490a-894a-3ce6f1109419
+//Resource Group ok, if each domain has its own Vault
+module rbacSBOwner 'Common/roleAssignment.bicep' = {
+  name: 'rbacSBOwner'
+  params: {
+    identityId: functionApp.outputs.principalId
+    roleId: '090c5cfd-751d-490a-894a-3ce6f1109419'
   }
 }
 
