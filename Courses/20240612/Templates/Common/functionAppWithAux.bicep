@@ -75,27 +75,7 @@ module rbacDataOwner 'roleAssignment.bicep' = {
   }
 }
 
-//Add Role Assignment (Key Vault Secrets User)
-//RoleId: 4633458b-17de-408a-b874-0445c86b69e6 
-//Resource Group ok, if each domain has its own Vault
-module rbacSecretReader 'roleAssignment.bicep' = {
-  name: 'rbacSecretReader${subDomainName}'
-  params: {
-    identityId: functionApp.outputs.principalId
-    roleId: '4633458b-17de-408a-b874-0445c86b69e6'
-  }
-}
 
-//Add Role Assignment (Azure Service Bus Data Owner)
-//RoleId: 090c5cfd-751d-490a-894a-3ce6f1109419
-//Resource Group ok, if each domain has its own Vault
-module rbacSBOwner 'roleAssignment.bicep' = {
-  name: 'rbacSBOwner${subDomainName}'
-  params: {
-    identityId: functionApp.outputs.principalId
-    roleId: '090c5cfd-751d-490a-894a-3ce6f1109419'
-  }
-}
 
 output appInsightId string = appInsight.outputs.id
 output storageAccountName string = storageAccount.outputs.name
