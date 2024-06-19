@@ -1,6 +1,18 @@
 ### All APIM policies
 
 
+#### Assign an API Role to a Managed Identity
+
+```powershell
+
+New-MgServicePrincipalAppRoleAssignment `
+    -ServicePrincipalId $serverServicePrincipalObjectId `
+    -PrincipalId $managedIdentityObjectId `
+    -ResourceId $serverServicePrincipalObjectId `
+    -AppRoleId $appRoleId
+
+```
+
 #### API
 
 ```xml
