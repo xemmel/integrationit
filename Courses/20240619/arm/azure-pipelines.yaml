@@ -1,0 +1,22 @@
+trigger:
+   - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: rgName
+    value: 'rg-invixo-devops-correct-mlc'
+  - name: location
+    value: 'germanywestcentral'
+
+steps:
+  - script: echo 'Hello'
+  - task: AzureCLI@2
+    displayName: 'Create Resource Group'
+    inputs:
+      azureSubscription: myconnectioncorrect
+      scriptType: pscore
+      scriptLocation: inlineScript
+      inlineScript: |
+        az group create --name $(rgName) --location $(location)
