@@ -103,3 +103,27 @@ WebHook paste address (manuel reg.)
 
 
 ```
+
+
+----- api management
+
+Managed Identity -> outbound
+
+        <authentication-managed-identity resource="https://storage.azure.com/" />
+
+
+Validate token (inbound) with roles
+
+
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid.">
+            <openid-config url="https://login.microsoftonline.com/adminintegrationit.onmicrosoft.com/.well-known/openid-configuration" />
+            <audiences>
+                <audience>api://91659d23-52f1-457c-9e50-8b82bc5d2c2a</audience>
+            </audiences>
+            <required-claims>
+                <claim name="roles" match="all">
+                    <value>apimexecuter</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>
+
