@@ -61,3 +61,35 @@ local.settings.json
 }
 
 ```
+
+### Event Grid
+
+```
+
+Create new Event Grid Topic
+
+  - Endpoint url (overview)
+
+Postman   
+
+ POST -> url  -> 401
+Header: aeg-sas-key : key
+
+body -> raw -> Json
+
+[
+    {
+        "id" : "12345",
+        "subject" : "c:\\temp\\1234.txt",
+        "eventType" : "fileCreated",
+        "eventTime" : "2024-06-26",
+        "data" : {
+            "customer" : "stofa"
+        }
+    }
+]  -> 200 ok
+-------------------
+
+
+
+```
