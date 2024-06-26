@@ -90,6 +90,16 @@ body -> raw -> Json
 ]  -> 200 ok
 -------------------
 
+create requestbin.com (public bin)
+
+Get the url 
+
+Create new subscription in the Topic 
+
+WebHook paste address (manuel reg.)
+
+
+
 
 
 ```
