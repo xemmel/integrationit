@@ -70,6 +70,12 @@ winget install Microsoft.DotNet.SDK.8 --silent
 
 choco install azure-functions-core-tools -y
 
+#### until bug is fixed!!!
+
+choco install azure-functions-core-tools --version=4.0.5611 -y
+
+
+
 ### winget
 
 winget install  Microsoft.Azure.FunctionsCoreTools --silent
