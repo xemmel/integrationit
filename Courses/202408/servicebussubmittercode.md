@@ -46,5 +46,5 @@ System.Console.WriteLine("Message sent...");
 
 ```powershell
 
-dotnet 
+dotnet run
 ```
