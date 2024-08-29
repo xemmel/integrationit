@@ -2,10 +2,12 @@
 
 dotnet new console -o servicebussubmitter
 
+cd servicebussubmitter
+
 dotnet add package Azure.Messaging.ServiceBus
 dotnet add package Azure.Identity
 
-cd servicebussubmitter
+
 
 ## Open visual studio code
 
@@ -46,5 +48,5 @@ System.Console.WriteLine("Message sent...");
 
 ```powershell
 
-dotnet run
+dotnet 
 ```
