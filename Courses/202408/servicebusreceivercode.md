@@ -1,13 +1,16 @@
 
+```powershell
 
-dotnet new console -o servicebussubmitter
+dotnet new console -o servicebusreceiver
 
-cd servicebussubmitter
+cd servicebusreceiver
+
 
 dotnet add package Azure.Messaging.ServiceBus
+
 dotnet add package Azure.Identity
 
-
+```
 
 ```csharp
 
