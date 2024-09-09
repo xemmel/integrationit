@@ -164,7 +164,7 @@ curl https://localhost:7039/weatherforecast -H "Authorization: Bearer $token"
 
 ```
   - Notice that you still get *401*
-  - Decode your token, See [Decode Token](/Courses/Templates/Tokens/Decode_Token.md) 
+  - Decode your token, See [Decode Token](/Courses/Templates/Tokens/Decode_token.md) 
     - Notice that no *scopes* nor *roles* are set
   
   - Add a reader role to the *App App Registration*
