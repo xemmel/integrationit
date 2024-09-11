@@ -1,7 +1,8 @@
 param (
     [string]$appName,
     [string]$env,
-    [string]$location
+    [string]$location,
+    [string]$companyShortName
 )
 
 $rgName = "rg-${appName}-common-${env}";
@@ -17,5 +18,6 @@ az deployment group create `
    --template-file .\commonApp.bicep `
    --parameters appName=$appName `
    --parameters env=$env `
+   --parameters companyShortName=$companyShortName
 ;
 

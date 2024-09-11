@@ -2,10 +2,10 @@ param (
     [string]$appName,
     [string]$entity,
     [string]$env,
-    [string]$location
+    [string]$location,
+    [string]$companyShortName
 )
 
-$rgCommonName = "rg-${appName}-common-${env}";
 $rgName = "rg-${appName}-${entity}-${env}";
 
 ### Create Resource Group
@@ -17,6 +17,7 @@ az deployment group create `
    --parameters appName=$appName `
    --parameters entity=$entity `
    --parameters env=$env `
+   --parameters companyShortName=$companyShortName
 ;
 
 
