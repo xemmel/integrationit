@@ -36,3 +36,14 @@ Resource Group: rg-${appName}-${entity}-${env}
 ### functionApp.bicep
 
    - 
+
+
+
+### Get Role Definition id/name from DisplayName
+
+```powershell
+$roleName = "Storage Account Contributor";
+
+az role definition list | ConvertFrom-Json | Where-Object {$_.RoleName -eq "${roleName}"} | Select-Object -ExpandProperty name
+
+```
