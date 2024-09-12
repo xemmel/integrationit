@@ -3,6 +3,8 @@ param planId string
 param location string
 param storageAccountName string
 param appInsightConnectionString string
+param appConfigurationStoreConnectionString string
+param appConfigLabelName string
 param alwaysOn bool = true
 
 resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
@@ -32,6 +34,14 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: 'dotnet'
+        }
+        {
+          name: 'AppConfigEndpoint'
+          value: appConfigurationStoreConnectionString
+        }
+        {
+          name: 'AppConfigLabelFilter'
+          value: appConfigLabelName
         }
       ]
     }

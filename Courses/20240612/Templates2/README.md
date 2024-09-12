@@ -24,6 +24,7 @@ $location = "northeurope";
 Resource Group: rg-${appName}-common-${env}
    Log Ana Workspace: log-${appName}-${env}
    App Service Plan: asp-${appName}-${env}
+   App Configuration Store: appcs-${appName}-${companyShortName}-${env}
 
 ##### Entity
 

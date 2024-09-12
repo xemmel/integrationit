@@ -30,3 +30,14 @@ module plan 'Common/appServicePlan.bicep' = {
     appServicePlanName: planName
   }
 }
+
+//App Configuration Store
+var appConfigStoreName = 'appcs-${fullUniqueName}'
+module appConfigStore 'Common/appConfiguration.bicep' = {
+  name: 'appConfigStore'
+  params: {
+    location: location
+    appConfigStoreName: appConfigStoreName
+    disableLocalAuth: false
+  }
+}

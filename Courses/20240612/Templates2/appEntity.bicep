@@ -7,6 +7,8 @@ param location string = resourceGroup().location
 
 var fullName = '${appName}-${entity}-${env}'
 var commonFullName = '${appName}-common-${env}'
+var commonFullUniqueName = '${appName}-${companyShortName}-${env}'
+
 
 var fullUniqueName = '${appName}-${entity}-${companyShortName}-${env}'
 var fullUniqueStandardName = '${appName}${entity}${companyShortName}${env}'
@@ -25,6 +27,13 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existin
 var planName = 'asp-${commonFullName}'
 resource plan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
   name: planName
+  scope: resourceGroup(commonRgName)
+}
+
+//Existing App Configuration Store
+var appConfigStoreName = 'appcs-${commonFullUniqueName}'
+resource appConfigStore 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
+  name: appConfigStoreName
   scope: resourceGroup(commonRgName)
 }
 
@@ -50,6 +59,8 @@ module storageAccount 'Common/storageAccount.bicep' = {
   }
 }
 
+var readonlyKey = filter(appConfigStore.listKeys().value, k => k.name == 'Primary Read Only')[0]
+
 //Function App
 var functionAppName = 'func-${fullUniqueName}'
 module functionApp 'Common/functionApp.bicep' = {
@@ -60,5 +71,7 @@ module functionApp 'Common/functionApp.bicep' = {
     functionAppName: functionAppName
     planId: plan.id
     storageAccountName: storageAccount.outputs.name 
+    appConfigurationStoreConnectionString: readonlyKey.connectionString
+    appConfigLabelName: entity
   }
 }
