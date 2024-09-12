@@ -20,3 +20,13 @@ module workspace 'Common/logAnalyticsWorkspace.bicep' = {
     workspaceName: workspaceName
   }
 }
+
+//App Service Plan
+var planName = 'asp-${fullName}'
+module plan 'Common/appServicePlan.bicep' = {
+  name: 'plan'
+  params: {
+    location: location
+    appServicePlanName: planName
+  }
+}

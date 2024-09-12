@@ -1,3 +1,38 @@
-.\script\deploy_common_app.ps1 -appName mb -env test -location northeurope -companyShortName dktv
 
-.\script\deploy_app_entity.ps1 -appName mb -entity user -env test -location northeurope -companyShortName dktv
+## Common App Deployment
+
+.\script\deploy_common_app.ps1 -appName $appName -env $env -location $location -companyShortName $companyShortName;
+
+## App Entity Deployment
+
+.\script\deploy_app_entity.ps1 -appName $appName -entity $entity -env $env -location $location -companyShortName $companyShortName;
+
+
+
+
+### Naming
+
+$appName = "mb";
+$env = "test";
+$entity = "user";
+$companyShortName = "mlc";
+$location = "northeurope";
+
+
+##### Common
+
+Resource Group: rg-${appName}-common-${env}
+   Log Ana Workspace: log-${appName}-${env}
+   App Service Plan: asp-${appName}-${env}
+
+##### Entity
+
+Resource Group: rg-${appName}-${entity}-${env}
+   Application Insight: appi-${appName}-${entity}-${env}
+   Storage Account: st${appName}${entity}${companyShortName}${env}
+   Function App: func-${appName}-${entity}-${env}
+
+
+### functionApp.bicep
+
+   - 

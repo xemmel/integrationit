@@ -21,6 +21,14 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existin
   scope: resourceGroup(commonRgName)
 }
 
+//Existing App Service Plan
+var planName = 'asp-${commonFullName}'
+resource plan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
+  name: planName
+  scope: resourceGroup(commonRgName)
+}
+
+
 //Application Insight
 var appInsightName = 'appi-${fullName}'
 module appInsight 'Common/applicationInsight.bicep' = {
@@ -39,5 +47,18 @@ module storageAccount 'Common/storageAccount.bicep' = {
   params: {
     location: location
     accountName: storageAccountName
+  }
+}
+
+//Function App
+var functionAppName = 'func-${fullName}'
+module functionApp 'Common/functionApp.bicep' = {
+  name: 'functionApp'
+  params: {
+    location: location
+    appInsightConnectionString: appInsight.outputs.connectionString
+    functionAppName: functionAppName
+    planId: plan.id
+    storageAccountName: storageAccount.outputs.name 
   }
 }
