@@ -5,7 +5,8 @@
 
 ## App Entity Deployment
 
-.\script\deploy_app_entity.ps1 -appName $appName -entity $entity -env $env -location $location -companyShortName $companyShortName;
+.\script\deploy_app_entity.ps1 -appName $appName -entity $entity -env $env -location $location -companyShortName $companyShortName -createQueue $true
+
 
 
 

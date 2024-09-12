@@ -41,3 +41,14 @@ module appConfigStore 'Common/appConfiguration.bicep' = {
     disableLocalAuth: false
   }
 }
+
+//Service Bus Namespace
+var serviceBusNamespaceName = 'sbns-${fullUniqueName}'
+module serviceBusNamespace 'Common/ServiceBus/serviceBusNamespace.bicep' = {
+  name: 'serviceBusNamespace'
+  params: {
+    location: location
+    namespaceName: serviceBusNamespaceName
+  }
+}
+

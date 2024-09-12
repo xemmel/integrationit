@@ -3,6 +3,7 @@ param companyShortName string
 param entity string
 param env string
 param location string = resourceGroup().location
+param createQueue bool = true
 
 
 var fullName = '${appName}-${entity}-${env}'
@@ -36,6 +37,10 @@ resource appConfigStore 'Microsoft.AppConfiguration/configurationStores@2023-03-
   name: appConfigStoreName
   scope: resourceGroup(commonRgName)
 }
+
+//Existing Service Bus Namespace
+var serviceBusNamespaceName = 'sbns-${commonFullUniqueName}'
+
 
 
 //Application Insight
@@ -75,3 +80,14 @@ module functionApp 'Common/functionApp.bicep' = {
     appConfigLabelName: entity
   }
 }
+
+//Service Bus Queue
+module queue 'Common/ServiceBus/serviceBusQueue.bicep' = if (createQueue) {
+  name: 'queue'
+  scope: resourceGroup(commonRgName )
+  params: {
+    queueName: '${entity}queue'
+    serviceBusNamespace: serviceBusNamespaceName
+  }
+}
+
