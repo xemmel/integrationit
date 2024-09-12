@@ -51,7 +51,7 @@ module storageAccount 'Common/storageAccount.bicep' = {
 }
 
 //Function App
-var functionAppName = 'func-${fullName}'
+var functionAppName = 'func-${fullUniqueName}'
 module functionApp 'Common/functionApp.bicep' = {
   name: 'functionApp'
   params: {
