@@ -5,7 +5,12 @@
 
 ## App Entity Deployment
 
-.\script\deploy_app_entity.ps1 -appName $appName -entity $entity -env $env -location $location -companyShortName $companyShortName -createQueue $true
+.\script\deploy_app_entity.ps1 -appName $appName -entity $entity -env $env -location $location -companyShortName $companyShortName
+
+## App Queue
+
+.\script\deploy_app_queue.ps1 -appName $appName -env $env -location $location -companyShortName $companyShortName -queueName %QUEUENAME% -requiresDuplicateDetection $true -duplicateDetectionHistoryTimeWindow "P2D" -maxDeliveryCount 10
+;
 
 
 
@@ -49,3 +54,11 @@ $roleName = "Storage Account Contributor";
 az role definition list | ConvertFrom-Json | Where-Object {$_.RoleName -eq "${roleName}"} | Select-Object -ExpandProperty name
 
 ```
+
+
+### Purge App Configuration
+
+az appconfig purge --name "appcs-${appName}-${companyShortName}-${env}" --location $location --yes
+;
+
+                 

@@ -3,8 +3,7 @@ param (
     [string]$entity,
     [string]$env,
     [string]$location,
-    [string]$companyShortName,
-    [bool]$createQueue
+    [string]$companyShortName
 )
 
 $rgName = "rg-${appName}-${entity}-${env}";
@@ -18,8 +17,7 @@ az deployment group create `
    --parameters appName=$appName `
    --parameters entity=$entity `
    --parameters env=$env `
-   --parameters companyShortName=$companyShortName `
-   --parameters createQueue=$createQueue
+   --parameters companyShortName=$companyShortName 
 ;
 
 

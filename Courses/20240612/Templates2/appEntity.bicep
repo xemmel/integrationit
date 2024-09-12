@@ -3,7 +3,6 @@ param companyShortName string
 param entity string
 param env string
 param location string = resourceGroup().location
-param createQueue bool = true
 
 
 var fullName = '${appName}-${entity}-${env}'
@@ -81,13 +80,5 @@ module functionApp 'Common/functionApp.bicep' = {
   }
 }
 
-//Service Bus Queue
-module queue 'Common/ServiceBus/serviceBusQueue.bicep' = if (createQueue) {
-  name: 'queue'
-  scope: resourceGroup(commonRgName )
-  params: {
-    queueName: '${entity}queue'
-    serviceBusNamespace: serviceBusNamespaceName
-  }
-}
+
 
