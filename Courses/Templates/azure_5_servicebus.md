@@ -6,7 +6,7 @@
 
 - Once created goto your newly create *Service Bus Namespace*
   - *Entities/Queues*
-    - *+ Queue*
+    - click *+ Queue*
     - Give the queue a name and leave all other properties 
     - Click **Create**
 
