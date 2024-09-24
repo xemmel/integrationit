@@ -6,7 +6,7 @@
 
 - Once created goto your newly create *Service Bus Namespace*
   - *Entities/Queues*
-    - * + Queue*
+    - *+ Queue*
     - Give the queue a name and leave all other properties 
     - Click **Create**
 
@@ -55,7 +55,7 @@
    - Set **Value** to *DK*
    - Click *Send*
  - Now go back and verify that both subscriptions got the message
- 
+
 
      
 
