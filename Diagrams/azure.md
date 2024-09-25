@@ -1,3 +1,3 @@
- ![Choose Advanced](/images/azure_archi.drawio.png)
+ ![Choose Advanced](/Images/azure_archi.drawio.png)
 
  
