@@ -234,6 +234,86 @@ HTTP Header
 
 
 
+- Verify Function App Queue solution
+
+
+- Function App/Environment Variables/Advanced Edit
+
+externalStorageConnection: connectionString to the storage account 
+(OLD WAY)
+
+
+externalStorageConnection__queueServiceUri: https://mlcaz204external.queue.core.windows.net
+
+- Function App/Identity -> Enable managed identity (On/Save)
+
+SAVE / Restart (Overview)
+
+- Application Insight
+   - Failures  -> Does not have permission
+
+External Storage Account
+  -> Access Control (IAM)
+   -> Add Role Assignment
+   -> Storage Queue Contributor
+   -> Members/Add members/function app name
+   -> Review/Create * 2
+
+4-5 min.
+ Verify that message can be processed from inbound queue
+
+
+
+$functionAppsIdentity = "651527a0-7050-427a-8487-8021d72d6965";
+$scope = "/subscriptions/9bc198aa-089c-4698-a7ef-8af058b48d90/resourceGroups/rg-az204-mlc-functionapp/providers/Microsoft.Storage/storageAccounts/rgaz204mlcfunctionaa955";
+
+
+
+Storage Account Contributor -> 17d1049b-9a84-46fb-8f53-869881c3d3ab
+Storage Blob Data Owner -> b7e6dc6d-f1e8-4753-8033-0f276bb0955b
+Storage Queue Data Contributor -> 974c5e8b-45b9-4653-ba55-5f855dd0fb88
+
+
+az role assignment create `
+  --role 17d1049b-9a84-46fb-8f53-869881c3d3ab `
+  --scope $scope `
+  --assignee $functionAppsIdentity
+;
+
+az role assignment create `
+  --role b7e6dc6d-f1e8-4753-8033-0f276bb0955b `
+  --scope $scope `
+  --assignee $functionAppsIdentity
+;
+
+az role assignment create `
+  --role 974c5e8b-45b9-4653-ba55-5f855dd0fb88 `
+  --scope $scope `
+  --assignee $functionAppsIdentity
+;
+
+
+
+
+@Microsoft.KeyVault(VaultName=az204mlcvault;SecretName=ftppassword)
+
+
+
+externalStorageConnection: connectionString to the storage account 
+(OLD WAY)
+
+
+externalStorageConnection__queueServiceUri: https://mlcaz204external.queue.core.windows.net
+
+
+
+
+
+
+AzureWebJobsStorage: connection String to the storage account
+
+AzureWebJobsStorage__accountname: rgaz204mlcfunctionaa955
+
 
 
 
