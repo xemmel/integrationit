@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aksapis-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aksapis
+  template:
+    metadata:
+      labels:
+        app: aksapis
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: sa-testaccount
+      containers:
+        - name: aksapis-container
+          image: acrintitaksmlc.azurecr.io/aksapis:1.1
+          
