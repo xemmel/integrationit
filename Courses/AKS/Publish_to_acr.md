@@ -5,7 +5,7 @@
 ### You need to be in the folder with the DockerFile
 
 $imageName = "aksapis";
-$version = "1.1";
+$version = "1.2";
 
 
 $version = Read-Host("version");

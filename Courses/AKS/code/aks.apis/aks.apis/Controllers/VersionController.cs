@@ -17,6 +17,6 @@ public class VersionController : ControllerBase
     [HttpGet(Name = "GetVersion")]
     public string Get()
     {
-        return "1.1";
+        return "1.2";
     }
 }

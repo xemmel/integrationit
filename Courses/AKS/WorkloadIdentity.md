@@ -69,7 +69,7 @@ Make a copy of **templates\workload\serviceAccount.yaml** and change the *azure.
 
 ```powershell
 
-kubectl apply --filename .\templates\workload\serviceAcount2.yaml
+kubectl apply --filename .\templates\workload\serviceAccount.yaml
 
 ```
 
@@ -82,7 +82,7 @@ az identity federated-credential create `
     --identity-name $appId.Name `
     --resource-group $rgAppName `
     --issuer $aksIssuer `
-    --subject system:serviceaccount:workloadtest:sa-testaccount `
+    --subject system:serviceaccount:neticdemo03:sa-testaccount `
     --audience api://AzureADTokenExchange `
     --subscription $subscriptionId
 

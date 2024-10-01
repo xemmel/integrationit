@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: neticapis-deployment
+  name: acrtest-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: neticapis
+      app: acrtest
   template:
     metadata:
       labels:
-        app: neticapis
+        app: acrtest
     spec:
       containers:
-        - name: aksapis-container
-          image: acrintitaksmlc2.azurecr.io/neticapis:1.1
+        - name: acrtest-container
+          image: acrintitaksmlc.azurecr.io/aksapis:1.2
           

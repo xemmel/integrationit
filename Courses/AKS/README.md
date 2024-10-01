@@ -14,7 +14,7 @@ $version = "1.30.1"  ## Can upgrade to "1.30.4"
 
 $location = "germanywestcentral";
 $appName = "intitaks";
-$yourinit = "mlc";
+$yourinit = "mlc2";
 $subscriptionId = "9bc198aa-089c-4698-a7ef-8af058b48d90"; ## Teaching Test
 
 $rgName = "rg-${appName}-${yourinit}";

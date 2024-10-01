@@ -1,18 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: neticapis-deployment
+  name: neticapiswid-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: neticapis
+      app: neticapiswid
   template:
     metadata:
       labels:
-        app: neticapis
+        app: neticapiswid
+        azure.workload.identity/use: "true"
     spec:
+      serviceAccountName: sa-testaccount
       containers:
-        - name: aksapis-container
+        - name: neticapiswid-container
           image: acrintitaksmlc2.azurecr.io/neticapis:1.1
           

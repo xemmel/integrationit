@@ -1,0 +1,20 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  creationTimestamp: "2024-09-29T07:16:31Z"
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: managed-private
+  resourceVersion: "344"
+  uid: 99d675c9-d0b8-4ade-b28d-182c21c499c4
+parameters:
+  cachingmode: ReadOnly
+  kind: Managed
+  storageaccounttype: StandardSSD_LRS
+  networkAccessPolicy: AllowPrivate
+  diskAccessID: /subscriptions/9bc198aa-089c-4698-a7ef-8af058b48d90/resourceGroups/MC_rg-intitaks-mlc2_aks-intitaks-mlc2_germanywestcentral/providers/Microsoft.Compute/diskAccesses/cluster2diskaccess
+provisioner: disk.csi.azure.com
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
