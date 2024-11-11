@@ -317,8 +317,55 @@ AzureWebJobsStorage__accountname: rgaz204mlcfunctionaa955
 
 
 
+COSMOS DB:
+
+
+- NoSQL (SQL) (default)
+
+- MongoDb 
+- Tables (storage account tables)
+- PostGreSQL 
+- Gremlin  (Graph)
+- Cassandra (Key/Value)
+
+- Event Grid
+
+Redis Cache
 
 
 
+API M
+
+
+```xml
+
+
+<validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid.">
+    <openid-config url="https://login.microsoftonline.com/adminintegrationit.onmicrosoft.com/.well-known/openid-configuration" />
+    <audiences>
+        <audience>api://facd96d4-988f-4445-bc4e-f1b7d09912f7</audience>
+    </audiences>
+    <required-claims>
+        <claim name="roles" match="all">
+            <value>apimexecuter</value>
+        </claim>
+    </required-claims>
+</validate-jwt>
+
+```
+
+Service
+   Api
+     Operation
+
+
+
+Operation Before Base
+API Before Base
+Product Before
+Service
+Product Before
+API After Base
+Operation After Base
 
 
