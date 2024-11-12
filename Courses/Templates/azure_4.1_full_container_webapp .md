@@ -16,7 +16,6 @@ $acrJson = az acr create `
   --name $acrName `
   --resource-group $rgName `
   --sku Standard `
-  --admin-enabled `
   --location $location
 ;
 
@@ -33,23 +32,51 @@ dotnet new webapi --use-controllers -o "${yourInit}webapi"
 
 dotnet sln add "${yourInit}webapi"
 
-```
+cd "${yourInit}webapi"
 
-- Open the solution in *Visual Studio Code*
-- Inside the webapi project (Not on solution level) add a *.dockerignore* file with the following content
-```
+
+#### Create Version Controller
+
+$versionControllerContent = @"
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace ${yourInit}webapi.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class VersionController : ControllerBase
+{
+
+    private readonly ILogger<VersionController> _logger;
+
+    public VersionController(ILogger<VersionController> logger)
+    {
+        _logger = logger;
+    }
+
+    [HttpGet(Name = "GetVersion")]
+    public string Get()
+    {
+        return "1.0";
+    }
+}
+"@
+
+echo $versionControllerContent >> .\Controllers\VersionController.cs
+
+### Create .dockerignore and Dockerfile
+
+$dockerIgnoreContent = @"
 bin
 obj
 publish
 publish.zip
+"@
 
-```
+echo $dockerIgnoreContent >> .dockerignore
 
-- Inside the webapi project (Not on solution level) add a *Dockerfile* file with the following content
-  - Remember to replace *nameofproject* with **[yourInitials]webapi**  (example: *mlcwebapi*)
-
-  ```
-
+$dockerFileContent = @"
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
@@ -67,13 +94,17 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 ENV ASPNETCORE_HTTP_PORTS=80
 COPY --from=build /app ./
-ENTRYPOINT ["dotnet", "nameofproject.dll"]
+ENTRYPOINT ["dotnet", "${yourInit}webapi.dll"]
+"@
+
+echo $dockerFileContent >> Dockerfile
 
 ```
 
 
 
-- Now run the following command (inside the webapi folder) to build a *container image* and push it to your *ACR* (**Azure Container Registry**) 
+
+- Now run the following command to build a *container image* and push it to your *ACR* (**Azure Container Registry**) 
   - Note: You do **not** need Docker etc. locally to do this, since we are using *ACR* to build the image. Make sure you are logged in in *Azure CLI* and that it is pointing at the correct *Azure Subscription*
 
 
@@ -92,6 +123,9 @@ az acr build -t mytestapi:1.0 . -r $acrName
 ```powershell
 
 az acr repository list --name $acrName
+
+az acr repository show-tags --name $acrName --repository mytestapi
+
  
 ```
 
@@ -138,8 +172,51 @@ az webapp restart --ids $webapp.id
 
 ### Test the api
 
-curl "https://${yourInit}intitwebapi.azurewebsites.net/weatherforecast"
+curl "https://${yourInit}intitwebapi.azurewebsites.net/version"
 
+
+### Change version
+
+```powershell
+
+#### Replace 1.0 with 1.1
+
+(Get-Content -Path 'Controllers/VersionController.cs') -replace '1.0', '1.1' | Set-Content -Path 'Controllers/VersionController.cs'
+
+
+
+#### Build and push a new container image to ACR with version 1.1
+az acr build -t mytestapi:1.1 . -r $acrName
+
+#### Change the webapp container from 1.0 to 1.1
+
+az webapp config container set `
+   --container-image-name "${acrName}.azurecr.io/mytestapi:1.1" `
+   --name "${yourInit}intitwebapi" `
+   --resource-group $rgName
+
+
+#### Replace x with y
+
+$from = Read-Host("from");
+$to = Read-Host("to");
+
+
+(Get-Content -Path 'Controllers/VersionController.cs') -replace $from, $to | Set-Content -Path 'Controllers/VersionController.cs'
+
+#### Build and push a new container image to ACR with version (to)
+az acr build -t mytestapi:$to . -r $acrName
+
+#### Change the webapp container from (from) to (to)
+
+az webapp config container set `
+   --container-image-name "${acrName}.azurecr.io/mytestapi:$to" `
+   --name "${yourInit}intitwebapi" `
+   --resource-group $rgName
+
+az webapp restart --ids $webapp.id
+
+```
 
 #### Cleanup
 
