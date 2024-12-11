@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "myfirstfunctions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7161",
+      "launchBrowser": false
+    }
+  }
+}

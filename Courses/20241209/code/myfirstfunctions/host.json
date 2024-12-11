@@ -1,0 +1,17 @@
+{
+    "version": "2.0",
+    "extensions" : {
+        "queues" : {
+            "visibilityTimeout" : "00:00:10"
+        }
+    },
+    "logging": {
+        "applicationInsights": {
+            "samplingSettings": {
+                "isEnabled": true,
+                "excludedTypes": "Request"
+            },
+            "enableLiveMetricsFilters": true
+        }
+    }
+}
