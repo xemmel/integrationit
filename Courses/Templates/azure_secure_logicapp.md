@@ -67,6 +67,17 @@ $apimJson =  az apim create `
 $apim = $apimJson | ConvertFrom-Json;
 
 
+### Use User MID in APIM calls
+
+```
+
+        <base />
+        <authentication-managed-identity resource="https://management.azure.com/" client-id="7d836ca2-1aac-4450-a2a6-449cf91aea59" />
+    </inbound>
+    <!-- Control if and how the requests are forwarded to services  -->
+
+```
+
 ### clean up
 
 az group delete --name "rg-${APPNAME}-remove" --yes --no-wait
