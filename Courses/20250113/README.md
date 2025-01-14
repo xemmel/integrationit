@@ -1,6 +1,9 @@
 ```powershell
 
+dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
+
 dotnet new console -o TextAI
+cd TextAI
 
 dotnet add package Azure.AI.Translation.Text
 
