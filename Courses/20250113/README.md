@@ -7,7 +7,7 @@ cd TextAI
 
 dotnet add package Azure.AI.Translation.Text
 
-
+dotnet run da "Today is Tuesday"
 
 ```
 
