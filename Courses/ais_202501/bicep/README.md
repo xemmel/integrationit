@@ -2,6 +2,7 @@
 > ..\ais_202501\bicep
 
 $rgName = "rg-***template-remove"
+$location = "germanywestcentral"
 
 az group create --name $rgName --location $location;
 
