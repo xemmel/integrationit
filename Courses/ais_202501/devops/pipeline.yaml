@@ -1,0 +1,29 @@
+trigger:
+  - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: serviceConnection
+    value: myserviceconnection
+  - name: appName
+    value: aismlcafternoon
+  - name: env
+    value: qa
+  - name: location
+    value: germanywestcentral
+
+steps:
+  - script: echo Hello, world! Have a nice day!!!!
+    displayName: 'Echo Hello, world!'
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs: 
+      azureResourceManagerConnection: $(serviceConnection)
+      resourceGroupName: 'rg-$(appName)-$(env)'
+      location: $(location)
+      csmFile: ./templates/integrationInfrastructure.bicep
+      overrideParameters: >
+        -platformName $(appName)
+        -env $(env)
+    displayName: 'Publish template'
