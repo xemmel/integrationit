@@ -1,6 +1,6 @@
 param platformName string
 param env string
-param location string = 'germanywestcentral'
+param location string = resourceGroup().location
 param storageAccountSKU string = 'Standard_GRS'
 
 
@@ -10,6 +10,13 @@ var storageKind = 'StorageV2'
 var userMIName = 'id-${platformName}-${env}'
 resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: userMIName
+  location: location
+}
+
+//Log analytic Workspace
+var laWorkspaceName = 'log-${platformName}-${env}'
+resource logWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+  name: laWorkspaceName
   location: location
 }
 
@@ -61,16 +68,29 @@ module laReceiveOrders 'workflow.bicep' = {
     location: location
     workflowName: 'receive-orders'
     messageType: 'Order'
+    workspaceId: logWorkspace.id
   }
 }
 
 //Logic app (receive invoice)
-module laReceiveInvoice'workflow.bicep' = {
+module laReceiveInvoice 'workflow.bicep' = {
   name: 'laReceiveInvoice'
   params: {
     location: location
     workflowName: 'receive-invoice'
     messageType: 'Invoice'
+    workspaceId: logWorkspace.id
+  }
+}
+
+//Logic app (receive credit-note)
+module laReceiveCreditNote 'workflow.bicep' = {
+  name: 'laReceiveCreditNote'
+  params: {
+    location: location
+    workflowName: 'receive-creditnote'
+    messageType: 'CreditNote'
+    workspaceId: logWorkspace.id
   }
 }
 

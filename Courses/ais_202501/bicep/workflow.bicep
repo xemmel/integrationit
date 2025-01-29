@@ -2,6 +2,7 @@ param workflowName string
 param location string
 
 param messageType string
+param workspaceId string
 
 
 resource workflow 'Microsoft.Logic/workflows@2019-05-01' = {
@@ -26,8 +27,33 @@ resource workflow 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'Compose'
           runAfter: {}
           inputs: messageType
+          trackedProperties: {
+            flowMessageType: messageType
+            flowDirection: 'inbound'
+          }
         }
       }
     }
+  }
+}
+
+
+resource diagnostic 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'diag'
+  scope: workflow
+  properties: {
+    workspaceId: workspaceId
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        enabled: true
+        category: 'AllMetrics'
+      }
+    ]
   }
 }
