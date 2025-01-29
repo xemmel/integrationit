@@ -53,3 +53,24 @@ module roleAssignmentSBDataOwner 'rbacResourceGroup.bicep' = {
     roleName: '090c5cfd-751d-490a-894a-3ce6f1109419'
   }
 }
+
+//Logic app (receive orders)
+module laReceiveOrders 'workflow.bicep' = {
+  name: 'laReceiveOrders'
+  params: {
+    location: location
+    workflowName: 'receive-orders'
+    messageType: 'Order'
+  }
+}
+
+//Logic app (receive invoice)
+module laReceiveInvoice'workflow.bicep' = {
+  name: 'laReceiveInvoice'
+  params: {
+    location: location
+    workflowName: 'receive-invoice'
+    messageType: 'Invoice'
+  }
+}
+
