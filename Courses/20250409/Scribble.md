@@ -237,4 +237,178 @@ AZURE!!!
 
 
 
+Async / Buffer (MQ)  / Event grid
+sync (http)
+
+
+:-)
+E-commerce site ->  BUFFER(order) ->  ERP (erp order id)
+site2
+app                                 ERP2
+
+Sales people (handheld device) -> QUEUE  -> (manual) ERP
+
+EVENT HUB
+
+Azure 
+
+Storage Account queue (basic small mq capa)
+$
+message: 75kb
+queue size: TB
+at most once delivery (message may be lost)
+
+
+Service bus queues   (REAL MQ)
+$$
+256 kb / 100 MB (premium)
+queue size: 1-4 GB
+at least once delivery (messages may be delivered more than once)
+Enqueue time -> delay system
+Duplicate detection
+Sessions
+
+Azure Resource -> Service Bus Namespace
+    - queue1
+    - queue2
+    - topic1 (not included in basic)
+    - topic2
+
+Premium
+   - 100 MB (
+   - Virtual Network support !!!
+   - partitioning (some part. standard edition)
+
+
+
+
+
+    
+
+
+    QUEUE
+
+           FIFO
+Submit -> Queue -> Consumer
+         No yes
+        1 message
+         ReceiveDelete    -> code fails!!! MY Responsibility!!
+         PeekLock      -> try to take the message   yes (commit) no (aban/timeout) (rollback)
+     -> Dead-letter queue
+
+        4 3  2 1  -> Any messages?
+100ms
+
+1 min. *  function/logic app
+
+
+
+
+Submit  -> Topic -> Sub1 -> Consumer
+                 -> Sub2 -> Consumer
+
+A -> TOPIC -> sub (1=1) -> B
+            -> sub2 (logging) (1=1)  
+
+   Providers -> MQ -> Consumers  (a message can only go to one consumers)
+
+4 3 2 1 
+
+
+Queue
+Topic
+
+   Providers -> Topic   -> 1..n  subscriptions(filter) (MQ) -> consumers
+                                 sub2 (MQ)  -> consumers
+
+
+every sub needs a filter (Boolean expre.)
+getall (filter!!)???
+getall2
+
+
+
+     MQ -> 1 consumer
+
+
+     MQ (Sessions)
+
+session1           
+
+queue message (custom properties) -> Envelope
+
+
+-----------
+
+Sessions
+
+    Queue (Session)
+
+Message -> SessionId
+
+
+     Scan1 new sessionId       message s1 (se en)message s1, msg s1, msg s2, msg s3
+
+     Scan2           MQ         Print 1, Print 2, Print x
+
+     Scanx
+
+     Scany
+
+     Entra (Authenticate)
+
+
+Azure 
+
+    management.azure.com
+
+
+
+
+OAuth2    -> OpenIdConnect
+
+
+           Identity Provider (google,entra)
+                 Authenticate (pass,passless,MFA)
+
+           Get-token (UserId,Purpose (audience)) -> management in azure
+
+     API (Azure, google calendar, gmail)
+         header:
+             Authorization:Bearer token
+
+
+Entra
+Authentication (WHO)
+
+Azure
+
+Authorization (What can you do?)
+
+Role Assignment
+
+WHO
+WHAT
+
+WHERE 
+
+Who -> EntraId (user, service account, group)
+What -> Role (Owner, Reader, Contributor,...data spefic)
+Where -> Scope (Man group, sub, rg, resource, sub-resource)
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
 
