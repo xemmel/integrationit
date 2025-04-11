@@ -22,7 +22,7 @@ var client = new ServiceBusClient(connectionString);
 
 var options = new ServiceBusReceiverOptions
 {
-    ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete
+    ReceiveMode = ServiceBusReceiveMode.PeekLock
 };
 
 var receiver = client.CreateReceiver(
@@ -35,7 +35,18 @@ var messages = await receiver
                 maxMessages: maxMessages,
                 maxWaitTime: maxWaitTime);
 
-foreach(var message in messages)
+foreach (var message in messages)
 {
-    System.Console.WriteLine(message.Body.ToString());
+    try
+    {
+        System.Console.WriteLine($"{message.Body} lock token: {message.LockToken}");
+        await receiver.CompleteMessageAsync(message);
+    }
+    catch (System.Exception)
+    {
+
+       await receiver.AbandonMessageAsync(message);
+    }
+
 }
+
