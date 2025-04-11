@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "falckfunctions", "falckfunctions.csproj", "{AE9A8969-F8FE-2313-CDA1-B26B632E9C43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE9A8969-F8FE-2313-CDA1-B26B632E9C43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9A8969-F8FE-2313-CDA1-B26B632E9C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9A8969-F8FE-2313-CDA1-B26B632E9C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9A8969-F8FE-2313-CDA1-B26B632E9C43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {682FD01D-8E93-4300-82A1-962463B8A6F9}
+	EndGlobalSection
+EndGlobal
