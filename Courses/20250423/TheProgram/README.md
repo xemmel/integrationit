@@ -68,3 +68,30 @@ System.Console.WriteLine(content.Value.Content);
 5-6 min
 
 dotnet run -> OK
+
+
+#### Create Service Account
+> You will need to take note of:
+  - Name
+  - ClientId
+  - ClientSecret
+  - TenantId
+
+- entra.microsoft.com
+  -> Applications / App Registrations
+     -> + New registration (give it a name and take note of it)
+  -> Take note of ClientId and TenantId
+  -> Manage/Certificates & secrets
+      -> + New Client Secret (give it a name and period not importannt)
+      -> Take note of the **VALUE**
+
+
+#### Use the Service Account in the Program
+
+```powershell
+
+$ENV:AZURE_TENANT_ID = "551c586d-a82d-4526-b186-d061ceaa589e";
+$ENV:AZURE_CLIENT_ID = "....";
+$ENV:AZURE_CLIENT_SECRET = "....";
+
+```
