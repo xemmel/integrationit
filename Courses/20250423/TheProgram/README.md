@@ -31,3 +31,40 @@ System.Console.WriteLine(content.Value.Content);
 
 
 ```
+
+
+### Change to DefaultAzureCredential
+
+```csharp
+
+using Azure.Identity;
+using Azure.Storage.Blobs;
+
+System.Console.WriteLine("Fetching blob...");
+
+string accountName = "vjbdkcustapptest";
+string containerName = "container2";
+string blobName = "test.txt";
+
+var credential = new DefaultAzureCredential();
+
+var client = new BlobServiceClient(
+        serviceUri: new Uri($"https://{accountName}.blob.core.windows.net"),
+        credential: credential);
+
+var containerClient = client.GetBlobContainerClient(containerName);
+var blobClient = containerClient.GetBlobClient(blobName);
+var content = await blobClient.DownloadContentAsync();
+System.Console.WriteLine(content.Value.Content);
+
+
+```
+
+> Run -> Azure CLI -> Not allowed -> Role Assignment on Storage Account  (blob data owner)
+   -> Storage Account -> Access Control -> Add Role Assignment  (Storage Blob Data Owner)  
+   -> Your self (az204student)
+   -> Review/Create * 2
+
+5-6 min
+
+dotnet run -> OK
