@@ -1,9 +1,9 @@
 - Create a new *Function App* (Resource Group: *rg-course-[init]-functionapp)
-  - Choose **App Service** and **Select**
+  - Choose **Flex** and **Select**
   - Create new *Resource Group*
   - Choose unique name (Note the name for later use)
     - Runtime Stack: .NET
-    - Version: 8 (LTS) isolated..
+    - Version: 9 (STS) isolated..
     - Region: Appropriate region
     - Operation System: Windows
   - Leave the rest *as is* and select **Review + create** and **Create**
@@ -12,7 +12,7 @@
   - Function App
   - Application Insight 
   - System *Storage Account*
-  - App Service Plan (S1)
+  - App Service Plan
 
 - In the *Overview* Page, verify that no *Functions* are currently deployed
 
@@ -20,9 +20,9 @@
 
 ```powershell
 
-func init integrationit-functions --worker-runtime dotnetIsolated
+func init azfunctions --worker-runtime dotnet-isolated --target-framework net9.0
 
-cd .\integrationit-functions\
+cd .\azfunctions\
 
 func new -n Myhttptrigger -t HttpTrigger
 
