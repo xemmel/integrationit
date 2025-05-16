@@ -39,13 +39,18 @@ MS Agenda:
 
 ### Clean up with CLI
 
-```powershell
+#### In powershell ISE 
 
-## In powershell ISE 
+
+```powershell
 
 az group list -o json | ConvertFrom-Json | Select-Object -ExpandProperty SyncRoot | Out-GridView -PassThru | ForEach-Object { az group delete --name $_.name --no-wait --yes }
 
-## In powershell core (filter in out-gridview not working!!)
+ ```
+
+ #### In powershell core (filter in out-gridview not working!!)
+
+```powershell
 
 az group list -o json | ConvertFrom-Json  | Out-GridView -PassThru | ForEach-Object { az group delete --name $_.name --no-wait --yes }
 
