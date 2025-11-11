@@ -66,11 +66,16 @@ az group delete --name $rgName --yes
 
 az group create --location $location --name $rgName
 
-az deployment group create `
+$deploymentJson = az deployment group create `
   --template-file .\templates\theplatform.bicep `
   --resource-group $rgName `
   --parameters appName=$appName `
   --parameters env=$env
+
+$deployment = $deploymentJson | ConvertFrom-Json
+$logicappUrl = $deployment.properties.outputs.receiveHttpLogicAppUrl.value
+
+curl $logicappUrl -X POST -d "hello logic app"
 
 
 ```

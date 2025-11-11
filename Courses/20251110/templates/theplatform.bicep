@@ -47,7 +47,7 @@ resource serviceBusProcessQueue 'Microsoft.ServiceBus/namespaces/queues@2024-01-
 
 //Receive HTTP Logic App
 var receiveHttpLogicAppName = 'la-${appName}-${env}-rec-http'
-
+var triggerName = 'HttpTrigger'
 resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
     name: receiveHttpLogicAppName
     location: location
@@ -62,7 +62,7 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
                 }
             }
             triggers: {
-                HttpTrigger: {
+                '${triggerName}': {
                     type: 'Request'
                     kind: 'Http'
                     inputs: {
@@ -76,7 +76,25 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
                     type: 'Compose'
                     runAfter: {}
                 }
+                Response: {
+                    inputs: {
+                        statusCode: 200
+                        body: 'Message: @{outputs(\'CreateBlobName\')} submitted'
+                    }
+                    type: 'Response'
+                    kind: 'Http'
+                    runAfter: {
+                        CreateBlobName: [ 'Succeeded' ]
+                        
+                    }
+                }
             }
         }
     }
 }
+
+
+var callback = receiveHttpLogicApp.listCallbackUrl(receiveHttpLogicApp.apiVersion)
+var triggerCallback = replace(callback.value,'?api','/triggers/${triggerName}/paths/invoke/api')
+
+output receiveHttpLogicAppUrl string = triggerCallback
