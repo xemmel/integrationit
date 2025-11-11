@@ -8,7 +8,7 @@
 ```powershell
 
 $env = "test"
-$init = "mlc" ## Change
+$init = "mlc2" ## Change
 $appName = "${init}theplatform";
 
 $rgName = "rg-ais-${appName}-${env}";
@@ -29,11 +29,49 @@ az storage account create `
    --location $location `
    --sku Standard_LRS
 
+### Create Container: process
+
 
 az storage container create `
   --name process `
   --account-name $storageAccountName
 
 
+### Create Queue: process
+
+
+az storage queue create `
+  --name process `
+  --account-name $storageAccountName
+
+
 
 ```
+
+### Cleanup
+
+```powershell
+
+az group delete --name $rgName --yes
+
+
+
+```
+
+
+
+### Deploy as bicep
+
+```powershell
+
+az group create --location $location --name $rgName
+
+az deployment group create `
+  --template-file .\templates\theplatform.bicep `
+  --resource-group $rgName `
+  --parameters appName=$appName `
+  --parameters env=$env
+
+
+```
+
