@@ -43,3 +43,40 @@ resource serviceBusProcessQueue 'Microsoft.ServiceBus/namespaces/queues@2024-01-
     name: 'process'
     parent: serviceBus
 }
+
+
+//Receive HTTP Logic App
+var receiveHttpLogicAppName = 'la-${appName}-${env}-rec-http'
+
+resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
+    name: receiveHttpLogicAppName
+    location: location
+    properties: {
+        definition: {
+            '$schema' : 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
+            contentVersion: '1.0.0.0'
+            parameters: {
+                '$connections' : {
+                    defaultValue: {}
+                    type: 'Object'
+                }
+            }
+            triggers: {
+                HttpTrigger: {
+                    type: 'Request'
+                    kind: 'Http'
+                    inputs: {
+                        method: 'POST'
+                    }
+                }
+            }
+            actions: {
+                CreateBlobName: {
+                    inputs: '@guid()'
+                    type: 'Compose'
+                    runAfter: {}
+                }
+            }
+        }
+    }
+}
