@@ -1,2 +1,8 @@
 GET https://func-mlctheplatform.azurewebsites.net/api/version
 x-functions-key:75WNiVcK7K23zQQRskwWgDBRA6YmUXvFrUzbKhTIjVzgAzFu9bx9yQ==
+
+###
+
+POST https://prod-21.germanywestcentral.logic.azure.com:443/workflows/754431e91ed44255bc2a0caa6c216b9b/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=1F-6IhJY7JTp9ZDiqtzvv5geYMtw6j7TIgcZfEPLpX0
+
+Hello Logic App

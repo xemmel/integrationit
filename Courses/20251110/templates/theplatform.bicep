@@ -2,106 +2,189 @@ param appName string
 param env string
 param location string = resourceGroup().location
 
-
 var workspaceName = 'log-${appName}-${env}'
 resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
-    name: workspaceName
-    location: location
+  name: workspaceName
+  location: location
 }
 
 //storage account
 var storageaccountname = '${appName}${env}st'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
-    name: storageaccountname
-    location: location
-    sku: {
-        name: 'Standard_LRS'
-    }
-    kind: 'StorageV2'
+  name: storageaccountname
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
 }
 
-
 resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01' = {
-    name: 'default'
-    parent: storageAccount
+  name: 'default'
+  parent: storageAccount
 }
 
 resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-01-01' = {
-    name: 'process'
-    parent: blobService
+  name: 'process'
+  parent: blobService
 }
-
 
 //Service bus namespace
 var servicebusName = 'sb-${appName}-${env}'
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
-    name: servicebusName
-    location: location
-    sku: {
-        name: 'Standard'
-    }
+  name: servicebusName
+  location: location
+  sku: {
+    name: 'Standard'
+  }
 }
 
 //Process Queue
 
 resource serviceBusProcessQueue 'Microsoft.ServiceBus/namespaces/queues@2024-01-01' = {
-    name: 'process'
-    parent: serviceBus
+  name: 'process'
+  parent: serviceBus
 }
 
+var uniqueDeploymentName = deployment().name
+
+module serviceBusApiConnection 'apiConnections/servicebus.bicep' = {
+  name: 'serviceBusApiCon-${uniqueDeploymentName}'
+  params: {
+    apiConnectionName: 'servicebusconnection'
+    location: location
+    serviceBusNamespace: serviceBus.name
+  }
+}
+
+module azureblobApiConnection 'apiConnections/generic.bicep' = {
+  name: 'azureblobApiCon-${uniqueDeploymentName}'
+  params: {
+    apiName: 'azureblobconnection'
+    location: location
+    apiType: 'azureblob'
+    displayName: 'MsgBox Azure Blob Connection'
+  }
+}
+
+//User Identity
+resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'id-${appName}-${env}'
+  location: location
+}
+
+var azureblobConnectionName = 'azureblobconnection'
+var serviceBusConnectionName = 'servicebusconnection'
 
 //Receive HTTP Logic App
 var receiveHttpLogicAppName = 'la-${appName}-${env}-rec-http'
 var triggerName = 'HttpTrigger'
 resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
-    name: receiveHttpLogicAppName
-    location: location
-    identity: {
-        type: 'SystemAssigned'
+  name: receiveHttpLogicAppName
+  location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${identity.id}': {}
     }
-    properties: {
-        definition: {
-            '$schema' : 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
-            contentVersion: '1.0.0.0'
-            parameters: {
-                '$connections' : {
-                    defaultValue: {}
-                    type: 'Object'
-                }
-            }
-            triggers: {
-                '${triggerName}': {
-                    type: 'Request'
-                    kind: 'Http'
-                    inputs: {
-                        method: 'POST'
-                    }
-                }
-            }
-            actions: {
-                CreateBlobName: {
-                    inputs: '@guid()'
-                    type: 'Compose'
-                    runAfter: {}
-                }
-                Response: {
-                    inputs: {
-                        statusCode: 200
-                        body: 'Message: @{outputs(\'CreateBlobName\')} submitted'
-                    }
-                    type: 'Response'
-                    kind: 'Http'
-                    runAfter: {
-                        CreateBlobName: [ 'Succeeded' ]
-                        
-                    }
-                }
-            }
+  }
+  properties: {
+    definition: {
+      '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
+      contentVersion: '1.0.0.0'
+      parameters: {
+        '$connections': {
+          defaultValue: {}
+          type: 'Object'
         }
-    }
-}
+        storageAccountName: {
+          defaultValue: storageAccount.name
+          type: 'String'
+        }
+      }
+      triggers: {
+        '${triggerName}': {
+          type: 'Request'
+          kind: 'Http'
+          inputs: {
+            method: 'POST'
+          }
+        }
+      }
+      actions: {
+        CreateBlobName: {
+          inputs: '@guid()'
+          type: 'Compose'
+          runAfter: {}
+        }
+        WriteToContainer: {
+          inputs: {
+            body: '@triggerBody()'
+            headers: {
+              ReadFileMetadataFromServer: true
+            }
+            host: {
+              connection: {
+                name: '@parameters(\'$connections\')[\'azureblob\'][\'connectionId\']'
+              }
+            }
+            method: 'post'
+            path: '/v2/datasets/@{encodeURIComponent(encodeURIComponent(parameters(\'storageAccountName\')))}/files'
+            queries: {
+              folderPath: 'process'
+              name: '@outputs(\'CreateBlobName\')'
+              queryParametersSingleEncoded: true
+            }
+          }
 
+          type: 'ApiConnection'
+          runAfter: { CreateBlobName: ['Succeeded'] }
+        }
+
+        Response: {
+          inputs: {
+            statusCode: 200
+            body: 'Message: @{outputs(\'CreateBlobName\')} submitted'
+          }
+          type: 'Response'
+          kind: 'Http'
+          runAfter: {
+            WriteToContainer: ['Succeeded']
+          }
+        }
+      }
+    }
+    parameters: {
+      '$connections': {
+        value: {
+          servicebus: {
+            connectionId: '${resourceGroup().id}/providers/Microsoft.Web/connections/${serviceBusConnectionName}'
+            connectionName: serviceBusConnectionName
+            connectionProperties: {
+              authentication: {
+                identity: identity.id
+                type: 'ManagedServiceIdentity'
+              }
+            }
+            id: '${subscription().id}/providers/Microsoft.Web/locations/westeurope/managedApis/servicebus'
+          }
+          azureblob: {
+            connectionId: '${resourceGroup().id}/providers/Microsoft.Web/connections/${azureblobConnectionName}'
+            connectionName: azureblobConnectionName
+            connectionProperties: {
+              authentication: {
+                identity: identity.id
+                type: 'ManagedServiceIdentity'
+              }
+            }
+            id: '${subscription().id}/providers/Microsoft.Web/locations/westeurope/managedApis/azureblob'
+          }
+        }
+      }
+    }
+  }
+}
 
 //Role Assignments
 
@@ -109,26 +192,23 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
 
 var servicebusOwnerRoleName = '090c5cfd-751d-490a-894a-3ce6f1109419'
 module ra_servicebusOwner 'roleassignment_rg.bicep' = {
-    params: {
-        identityId: receiveHttpLogicApp.identity.principalId
-        roleName: servicebusOwnerRoleName
-    }
+  params: {
+    identityId: identity.properties.principalId
+    roleName: servicebusOwnerRoleName
+  }
 }
 
 //Service bus data owner
 
 var blobOwnerRoleName = 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
 module ra_blobOwner 'roleassignment_rg.bicep' = {
-    params: {
-        identityId: receiveHttpLogicApp.identity.principalId
-        roleName: blobOwnerRoleName
-    }
+  params: {
+    identityId: identity.properties.principalId
+    roleName: blobOwnerRoleName
+  }
 }
 
-
 ///Function App
-
-
 
 //Application Insight
 var appInsightKind = 'web'
@@ -249,7 +329,6 @@ module blobOwnerRBAC 'roleassignment_rg.bicep' = {
 
 //Monitoring Metrics Publisher
 
-
 var monitorRoleId = '3913510d-42f4-4e42-8a64-420c390055eb'
 module monitorrRBAC 'roleassignment_rg.bicep' = {
   params: {
@@ -258,8 +337,7 @@ module monitorrRBAC 'roleassignment_rg.bicep' = {
   }
 }
 
-
 var callback = receiveHttpLogicApp.listCallbackUrl(receiveHttpLogicApp.apiVersion)
-var triggerCallback = replace(callback.value,'?api','/triggers/${triggerName}/paths/invoke/api')
+var triggerCallback = replace(callback.value, '?api', '/triggers/${triggerName}/paths/invoke/api')
 
 output receiveHttpLogicAppUrl string = triggerCallback
