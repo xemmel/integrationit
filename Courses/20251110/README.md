@@ -80,3 +80,12 @@ curl $logicappUrl -X POST -d "hello logic app"
 
 ```
 
+
+### Delete Resource Group
+
+```powershell
+
+az group delete --name $rgName --yes
+
+```
+
