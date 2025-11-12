@@ -42,9 +42,56 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
 
 //Process Queue
 
-resource serviceBusProcessQueue 'Microsoft.ServiceBus/namespaces/queues@2024-01-01' = {
+resource serviceBusProcessTopic 'Microsoft.ServiceBus/namespaces/topics@2024-01-01' = {
   name: 'process'
   parent: serviceBus
+}
+
+//Logging topic subscription
+
+resource serviecBusProcessTopicLoggingSub 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2024-01-01' = {
+  name: 'logging'
+  parent: serviceBusProcessTopic
+}
+
+resource serviecBusProcessTopicLoggingSubRule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2024-01-01' = {
+  name: 'loggingRule'
+  parent: serviecBusProcessTopicLoggingSub
+  properties: {
+    sqlFilter: {
+      sqlExpression: '1=1'
+    }
+  }
+}
+
+resource serviecBusProcessTopicSallingSub 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2024-01-01' = {
+  name: 'salling'
+  parent: serviceBusProcessTopic
+}
+
+resource serviecBusProcessTopicSallingSubRule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2024-01-01' = {
+  name: 'sallingRule'
+  parent: serviecBusProcessTopicSallingSub
+  properties: {
+    sqlFilter: {
+      sqlExpression: '(Receiver = \'Salling\')'
+    }
+  }
+}
+
+resource serviecBusProcessTopicCoopSub 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2024-01-01' = {
+  name: 'coop'
+  parent: serviceBusProcessTopic
+}
+
+resource serviecBusProcessTopicCoopSubRule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2024-01-01' = {
+  name: 'coopRule'
+  parent: serviecBusProcessTopicCoopSub
+  properties: {
+    sqlFilter: {
+      sqlExpression: '(Receiver = \'Coop\')'
+    }
+  }
 }
 
 var uniqueDeploymentName = deployment().name
@@ -128,6 +175,12 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'Function'
           runAfter: { CreateBlobName: ['Succeeded'] }
         }
+
+        ExtractReceiver: {
+          inputs: '@xpath(xml(body(\'Transform\')),\'//Receiver/text()\')[0]'
+          type: 'Compose'
+          runAfter: { Transform: ['Succeeded'] }
+        }
         WriteToContainer: {
           inputs: {
             body: '@body(\'Transform\')'
@@ -149,12 +202,15 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           }
 
           type: 'ApiConnection'
-          runAfter: { Transform: ['Succeeded'] }
+          runAfter: { ExtractReceiver: ['Succeeded'] }
         }
         WriteToQueue: {
           inputs: {
             body: {
               ContentData: '@base64(concat(\'{\',\'\n\',\'   "blobName" : "\',outputs(\'CreateBlobName\'),\'"\',\'\n\',\'}\'))'
+              Properties: {
+                Receiver: '@{outputs(\'ExtractReceiver\')}'
+              }
             }
             method: 'post'
             host: {
