@@ -121,7 +121,7 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
 
         WriteToContainer: {
           inputs: {
-            body: '@body(\'Transform\')'
+            body: '@triggerBody()'
             headers: {
               ReadFileMetadataFromServer: true
             }
