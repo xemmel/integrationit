@@ -118,10 +118,19 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'Compose'
           runAfter: {}
         }
-
-        WriteToContainer: {
+        Transform: {
           inputs: {
             body: '@triggerBody()'
+            function: {
+              id: '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/sites/func-${appName}-${env}/functions/Transform'
+            }
+          }
+          type: 'Function'
+          runAfter: { CreateBlobName: ['Succeeded'] }
+        }
+        WriteToContainer: {
+          inputs: {
+            body: '@body(\'Transform\')'
             headers: {
               ReadFileMetadataFromServer: true
             }
@@ -140,7 +149,7 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           }
 
           type: 'ApiConnection'
-          runAfter: { CreateBlobName: ['Succeeded'] }
+          runAfter: { Transform: ['Succeeded'] }
         }
         WriteToQueue: {
           inputs: {
