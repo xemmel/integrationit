@@ -141,7 +141,25 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'ApiConnection'
           runAfter: { CreateBlobName: ['Succeeded'] }
         }
-
+        WriteToQueue: {
+          inputs: {
+            body: {
+              ContentData: '@base64(concat(\'{\',\'\n\',\'   "blobName" : "\',outputs(\'CreateBlobName\'),\'"\',\'\n\',\'}\'))'
+            }
+            method: 'post'
+            host: {
+              connection: {
+                name: '@parameters(\'$connections\')[\'servicebus\'][\'connectionId\']'
+              }
+            }
+            path: '/@{encodeURIComponent(encodeURIComponent(\'process\'))}/messages'
+            queries: {
+              systemProperties: 'None'
+            }
+          }
+          type: 'ApiConnection'
+          runAfter: { WriteToContainer: ['Succeeded'] }
+        }
         Response: {
           inputs: {
             statusCode: 200
@@ -150,7 +168,7 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'Response'
           kind: 'Http'
           runAfter: {
-            WriteToContainer: ['Succeeded']
+            WriteToQueue: ['Succeeded']
           }
         }
       }
@@ -291,7 +309,7 @@ resource functionapp 'Microsoft.Web/sites@2024-11-01' = {
         }
         {
           name: 'AzureWebJobsStorage__accountName'
-          value: storageAccount.name
+          value: funcstorageAccount.name
         }
       ]
     }
