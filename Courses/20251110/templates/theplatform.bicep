@@ -51,6 +51,9 @@ var triggerName = 'HttpTrigger'
 resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
     name: receiveHttpLogicAppName
     location: location
+    identity: {
+        type: 'SystemAssigned'
+    }
     properties: {
         definition: {
             '$schema' : 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
@@ -93,6 +96,28 @@ resource receiveHttpLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
     }
 }
 
+
+//Role Assignments
+
+//Service bus data owner
+
+var servicebusOwnerRoleName = '090c5cfd-751d-490a-894a-3ce6f1109419'
+module ra_servicebusOwner 'roleassignment_rg.bicep' = {
+    params: {
+        identityId: receiveHttpLogicApp.identity.principalId
+        roleName: servicebusOwnerRoleName
+    }
+}
+
+//Service bus data owner
+
+var blobOwnerRoleName = 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+module ra_blobOwner 'roleassignment_rg.bicep' = {
+    params: {
+        identityId: receiveHttpLogicApp.identity.principalId
+        roleName: blobOwnerRoleName
+    }
+}
 
 var callback = receiveHttpLogicApp.listCallbackUrl(receiveHttpLogicApp.apiVersion)
 var triggerCallback = replace(callback.value,'?api','/triggers/${triggerName}/paths/invoke/api')
