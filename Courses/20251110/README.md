@@ -89,3 +89,29 @@ az group delete --name $rgName --yes
 
 ```
 
+
+#### Queries
+
+
+AppRequests
+| where Name == 'Calculator'
+| summarize count() by tostring(Success)
+| render piechart 
+
+
+AppRequests
+| where Name == 'Calculator'
+| summarize count() by bin(TimeGenerated,1m), tostring(Success)
+| render barchart 
+
+AppTraces
+| extend number_ = tostring(Properties.number)
+| where number_ != ''
+| summarize count() by number_
+| render piechart 
+
+
+AppRequests
+| where Name == 'Calculator'
+| project TimeGenerated, Success,DurationMs,OperationId
+| order by TimeGenerated desc
