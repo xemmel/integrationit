@@ -22,7 +22,7 @@ public class HttpTrigger12
     }
 
     [Function("HttpTrigger2")]
-    public IActionResult Run2([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+    public async Task<IActionResult> Run2Async([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req, CancellationToken cancellationToken)
     {
         _logger.LogInformation("C# HTTP trigger function processed a request.");
         return new OkObjectResult("Welcome to Azure Functions2!");
