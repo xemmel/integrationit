@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SBReceiver/SBReceiver.csproj" />
+  <Project Path="SBSubmitter/SBSubmitter.csproj" />
+</Solution>
