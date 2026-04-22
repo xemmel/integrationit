@@ -218,6 +218,17 @@ password cannot be "admin"
 
 ```
 
+### WSL Install Kali
+
+```powershell
+
+wsl --install kali-linux
+
+sudo apt install kali-linux-default -y
+
+
+```
+
 ### Setup docker and multipass
 
 ```bash
@@ -243,4 +254,49 @@ newgrp docker
 
 sudo snap install multipass
 
+```
+
+### Create Multipass server
+
+```bash
+
+sudo iptables -P FORWARD ACCEPT
+
+multipass launch --name server1 --memory 4GB --cpus 2 --disk 20GB devel
+
+multipass shell server1
+
+sudo apt update && sudo apt upgrade -y
+
+```
+
+### Install dotnet SDK Ubuntu
+
+```bash
+
+sudo apt-get update && \
+  sudo apt-get install -y dotnet-sdk-10.0
+
+```
+
+### Install Azure CLI Ubuntu
+
+```bash
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+```
+
+### Delete all unwanted Resource Group
+
+```powershell
+
+ az group list -o json | ConvertFrom-Json | Out-GridView -PassThru | ForEach-Object {az group delete --name $_.name --yes --no-wait}
+
+```
+
+### Managed Indentity in Function App Configuration
+
+```
+"ServiceBusConnection__fullyQualifiedNamespace" : "az204mlcqueues.servicebus.windows.net"
 ```
