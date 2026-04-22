@@ -206,4 +206,41 @@ func init FunctionApp --worker-runtime dotnet-isolated  --target-framework net10
 
 
 
+## WSL
 
+```powershell
+
+
+
+wsl --install Ubuntu-24.04
+
+password cannot be "admin"
+
+```
+
+### Setup docker and multipass
+
+```bash
+
+### Make passwordless sudo
+
+sudo visudo
+
+%sudo   ALL=(ALL:ALL) ALL
+->
+%sudo   ALL=(ALL:ALL) NOPASSWD:ALL
+
+CRTL+X
+Y
+
+sudo apt update
+sudo apt upgrade -y
+
+sudo apt install docker.io -y
+sudo usermod -aG docker $USER
+newgrp docker
+
+
+sudo snap install multipass
+
+```
