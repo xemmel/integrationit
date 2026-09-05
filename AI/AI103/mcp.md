@@ -50,6 +50,17 @@ az cognitiveservices account deployment list \
 
 ### Code
 
+#### venv
+
+```bash
+
+python3 -m venv devenv
+
+source devenv/bin/activate
+
+
+```
+
 #### Simple completion
 
 ##### pip
@@ -193,6 +204,54 @@ python3 mcp_server.py
 
 ```
 
+##### Container Server
+
+###### Create files
+```bash
+
+rm -f mcp_requirements.txt
+rm -f Dockerfile
+
+cat<<EOF>> mcp_requirements.txt
+mcp
+EOF
+
+cat<<EOF>> Dockerfile
+FROM python:3.14-slim
+
+WORKDIR /app
+
+COPY mcp_requirements.txt .
+RUN pip install --no-cache-dir -r mcp_requirements.txt
+
+COPY mcp_server.py .
+
+EXPOSE 8000
+
+CMD ["python", "mcp_server.py"]
+EOF
+
+
+```
+
+###### build image
+
+```bash
+
+docker buildx build --tag mcpserver:1.0 .
+
+
+```
+
+###### Run container
+
+```bash
+
+docker run --publish 7777:8000 --name mcpserver -d mcpserver:1.0
+
+
+```
+
 #### Client
 
 ```bash
@@ -302,10 +361,79 @@ EOF
 
 ```
 
+##### Change port if container
+
+```bash
+
+sed 's/8000/7777/g' mcp_client_app.py -i
+
+```
+
 ##### Run client
 
 ```bash
 
 python3 mcp_client_app.py
+
+```
+
+###### Log mcp server container
+
+```bash
+
+docker logs mcpserver -f
+
+```
+
+
+
+#### Extended mcp server
+
+```python
+
+import sys
+from mcp.server.mcpserver import MCPServer
+
+mcp = MCPServer("my-first-mcp")
+
+
+@mcp.tool()
+def save_file(content: str, fileName: str) -> str:
+    """Create File"""
+
+
+    with open(fileName, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    print(f">>> File created '{fileName}'\nContent: {content}")
+
+    return f"File created.."
+
+@mcp.tool()
+def create_support_case(description: str) -> str:
+    """Create support case"""
+
+    print(f">>> Support case created: '{description}'")
+
+    return f"Support case created.."
+
+@mcp.tool()
+def say_hello(name: str) -> str:
+    """Say hello to somebody."""
+
+    print(f">>> MCP TOOL CALLED: {name}", file=sys.stderr)
+    print(f">>> HELLO: {name}", file=sys.stderr)
+
+    return f"Hello {name}!"
+
+
+if __name__ == "__main__":
+    mcp.run(
+        transport="streamable-http",
+        host="0.0.0.0",
+        port=8000,
+        stateless_http=True,
+        json_response=True,
+    )
 
 ```
