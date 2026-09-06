@@ -252,6 +252,17 @@ docker run --publish 7777:8000 --name mcpserver -d mcpserver:1.0
 
 ```
 
+##### Do all build container
+
+```bash
+read -p "Image Version: " IMAGEVERSION
+
+docker rm mcpserver -f 2>/dev/null
+docker buildx build --tag "mcpserver:${IMAGEVERSION}" .
+docker run --publish 7777:8000 --name mcpserver -d "mcpserver:${IMAGEVERSION}"
+
+```
+
 #### Client
 
 ```bash
@@ -416,6 +427,75 @@ def create_support_case(description: str) -> str:
     print(f">>> Support case created: '{description}'")
 
     return f"Support case created.."
+
+@mcp.tool()
+def say_hello(name: str) -> str:
+    """Say hello to somebody."""
+
+    print(f">>> MCP TOOL CALLED: {name}", file=sys.stderr)
+    print(f">>> HELLO: {name}", file=sys.stderr)
+
+    return f"Hello {name}!"
+
+
+if __name__ == "__main__":
+    mcp.run(
+        transport="streamable-http",
+        host="0.0.0.0",
+        port=8000,
+        stateless_http=True,
+        json_response=True,
+    )
+
+```
+
+
+#### More extended
+
+```python
+
+import uuid
+import sys
+from mcp.server.mcpserver import MCPServer
+
+mcp = MCPServer("my-first-mcp")
+
+
+@mcp.tool()
+def save_file(content: str, fileName: str) -> str:
+    """Create File"""
+
+
+    with open(fileName, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    print(f">>> File created '{fileName}'\nContent: {content}")
+
+    return f"File created.."
+
+@mcp.tool()
+def create_support_case() -> str:
+    """Create support case and return the unique case id"""
+    caseId = uuid.uuid4()
+    print(f">>> Support case created: '{caseId}'")
+
+    return f"{caseId}"
+
+@mcp.tool()
+def update_support_case_description(caseId: str, description: str) -> str:
+    """Create support case"""
+
+    print(f">>> Support case '{caseId} updated with '{description}'")
+
+    return f"Support case updated.."
+
+@mcp.tool()
+def dont_call_this_function_for_humans_only() -> str:
+    """Not to be called by agents"""
+
+    print(f">>> CALLED ANYWAY!!!", file=sys.stderr)
+
+    return f"T minus 10"
 
 @mcp.tool()
 def say_hello(name: str) -> str:
