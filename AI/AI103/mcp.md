@@ -380,11 +380,139 @@ sed 's/8000/7777/g' mcp_client_app.py -i
 
 ```
 
+##### Client Agent
+
+```bash
+
+cat<<EOF>> client_agent.py
+import asyncio
+import json
+import os
+
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from mcp import Client
+from mcp.types import TextContent
+
+
+async def main():
+    # Azure Foundry / OpenAI client
+    project = AIProjectClient(
+        endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+        credential=DefaultAzureCredential(),
+    )
+
+    openai = project.get_openai_client()
+
+    # Keep the LOCAL MCP connection open for the whole chat session
+    async with Client("http://localhost:7777/mcp") as mcp:
+
+        # Discover MCP tools once
+        discovered = await mcp.list_tools()
+
+        tools = []
+
+        for tool in discovered.tools:
+            print(f"Found MCP tool: {tool.name}")
+
+            tools.append({
+                "type": "function",
+                "name": tool.name,
+                "description": tool.description or "",
+                "parameters": tool.input_schema,
+            })
+
+        previous_response_id = None
+
+        while True:
+            question = input("\nYou: ").strip()
+
+            if question.lower() == "exit":
+                print("Bye.")
+                break
+
+            # Start / continue conversation
+            kwargs = {
+                "model": os.environ["FOUNDRY_DEPLOYMENT"],
+                "input": question,
+                "tools": tools,
+            }
+
+            if previous_response_id:
+                kwargs["previous_response_id"] = previous_response_id
+
+            response = openai.responses.create(**kwargs)
+
+            # Agent/tool loop for this user turn
+            while True:
+                calls = [
+                    item
+                    for item in response.output
+                    if item.type == "function_call"
+                ]
+
+                if not calls:
+                    print(f"Assistant: {response.output_text}")
+
+                    # This is what keeps the conversation context
+                    previous_response_id = response.id
+                    break
+
+                tool_outputs = []
+
+                for call in calls:
+                    arguments = json.loads(call.arguments)
+
+                    print(
+                        f">>> LLM REQUESTED MCP TOOL: "
+                        f"{call.name}({arguments})"
+                    )
+
+                    result = await mcp.call_tool(
+                        call.name,
+                        arguments,
+                    )
+
+                    text = "\n".join(
+                        block.text
+                        for block in result.content
+                        if isinstance(block, TextContent)
+                    )
+
+                    tool_outputs.append({
+                        "type": "function_call_output",
+                        "call_id": call.call_id,
+                        "output": text,
+                    })
+
+                # Let the model continue after seeing tool results
+                response = openai.responses.create(
+                    model=os.environ["FOUNDRY_DEPLOYMENT"],
+                    previous_response_id=response.id,
+                    input=tool_outputs,
+                    tools=tools,
+                )
+
+
+asyncio.run(main())
+EOF
+
+```
+
 ##### Run client
 
 ```bash
 
 python3 mcp_client_app.py
+
+```
+
+##### Run agent
+
+```bash
+
+python3 client_agent.py
+
 
 ```
 
@@ -515,5 +643,75 @@ if __name__ == "__main__":
         stateless_http=True,
         json_response=True,
     )
+
+```
+
+
+### extended with userId
+
+```bash
+
+import uuid
+import sys
+from mcp.server.mcpserver import MCPServer
+
+mcp = MCPServer("my-first-mcp")
+
+
+@mcp.tool()
+def save_file(content: str, fileName: str) -> str:
+    """Create File"""
+
+
+    with open(fileName, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    print(f">>> File created '{fileName}'\nContent: {content}")
+
+    return f"File created.."
+
+@mcp.tool()
+def create_support_case(userId: int) -> str:
+    """Create support case and return the unique case id"""
+    caseId = uuid.uuid4()
+    print(f">>> Support case created: '{caseId}' user: {userId}")
+
+    return f"{caseId}"
+
+@mcp.tool()
+def update_support_case_description(caseId: str, description: str) -> str:
+    """Create support case"""
+
+    print(f">>> Support case '{caseId} updated with '{description}'")
+
+    return f"Support case updated.."
+
+@mcp.tool()
+def dont_call_this_function_for_humans_only() -> str:
+    """Not to be called by agents"""
+
+    print(f">>> CALLED ANYWAY!!!", file=sys.stderr)
+
+    return f"T minus 10"
+
+@mcp.tool()
+def say_hello(name: str) -> str:
+    """Say hello to somebody."""
+
+    print(f">>> MCP TOOL CALLED: {name}", file=sys.stderr)
+    print(f">>> HELLO: {name}", file=sys.stderr)
+
+    return f"Hello {name}!"
+
+
+if __name__ == "__main__":
+    mcp.run(
+        transport="streamable-http",
+        host="0.0.0.0",
+        port=8000,
+        stateless_http=True,
+        json_response=True,
+    )
+
 
 ```
