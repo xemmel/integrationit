@@ -257,9 +257,30 @@ docker run --publish 7777:8000 --name mcpserver -d mcpserver:1.0
 ```bash
 read -p "Image Version: " IMAGEVERSION
 
+CURRENT_DIR=$(pwd)
+
+rm -fr "${CURRENT_DIR}/dockerfiles"
+mkdir -p "${CURRENT_DIR}/dockerfiles"
+
 docker rm mcpserver -f 2>/dev/null
 docker buildx build --tag "mcpserver:${IMAGEVERSION}" .
-docker run --publish 7777:8000 --name mcpserver -d "mcpserver:${IMAGEVERSION}"
+docker run --publish 7777:8000 --name mcpserver -v "${CURRENT_DIR}/dockerfiles:/tmp/dockerfiles" -d "mcpserver:${IMAGEVERSION}"
+
+```
+
+##### Log container
+
+```bash
+
+docker logs mcpserver -f
+
+```
+
+##### Bash container
+
+```bash
+
+docker exec -it mcpserver bash
 
 ```
 
