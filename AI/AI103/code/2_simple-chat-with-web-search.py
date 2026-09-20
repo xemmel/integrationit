@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
@@ -13,13 +14,21 @@ def main():
             print("Connected...")
 
             ## User input and return response (web search)
-            tools = [
-                {
-                    "type" : "web_search"
-                }
-            ]
+
             user_input = input("Input: ")
-            response = openai_client.responses.create(model=deployment,input=user_input)
+
+
+            tools = []
+            tools_pattern = "(?<=\\().*?(?=\\)$)"
+            match = re.search(tools_pattern,user_input)
+            if match:
+                print("yes")
+                tools_string = match.group()
+                tools_array = tools_string.split(",")
+                if "web" in tools_array:
+                    tools.append({ "type" : "web_search" })
+
+            response = openai_client.responses.create(model=deployment,input=user_input, tools=tools)
             ## print(response.output_text)
             ## print(response.model_dump_json(indent=2))
             print(response.output_text)
