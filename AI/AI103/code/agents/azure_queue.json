@@ -1,0 +1,69 @@
+{
+    "name" : "azure-function-json-agent",
+    "definition": {
+        "kind": "prompt",
+        "model": "astra6",
+        "instructions": "You are a helpful support agent. You answer like a pirate with bad teeth",
+        "tools": [
+            {
+                "type": "web_search"
+            },
+            {
+                "type": "function",
+                "name": "create_support_ticket",
+                "description": "Creates a support ticket for an employee",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "employee_id": {
+                            "type": "string",
+                            "description": "Must be [0-9]{4}"
+                        }
+                    },
+                    "required": [
+                        "employee_id"
+                    ]
+                }
+            },
+            {
+                "type": "azure_function",
+                "azure_function": {
+                    "function": {
+                        "name": "say_hello",
+                        "description": "Say hello to a person, through an async call",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "person_name": {
+                                    "type": "string",
+                                    "description": "The name of the person to greet"
+                                },
+                                "extra_greeting": {
+                                    "type": "string",
+                                    "description": "An extra greeting. Optional. If left out: Hello {person}. Otherwise Hello {person}, {extra_greeting}"
+                                }
+                            },
+                            "required": [
+                                "person_name"
+                            ]
+                        }
+                    },
+                    "input_binding": {
+                        "type": "storage_queue",
+                        "storage_queue": {
+                            "queue_service_endpoint": "https://integrationitai.queue.core.windows.net",
+                            "queue_name": "agent-input"
+                        }
+                    },
+                     "output_binding": {
+                        "type": "storage_queue",
+                        "storage_queue": {
+                            "queue_service_endpoint": "https://integrationitai.queue.core.windows.net",
+                            "queue_name": "agent-output"
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

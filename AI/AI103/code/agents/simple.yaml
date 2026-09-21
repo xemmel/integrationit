@@ -1,0 +1,17 @@
+version: 1.0.0
+name: first-yaml-agent
+description: first yaml agent
+
+id: ''
+
+model:
+  id: 'astra6'
+  options:
+    temperature: 1
+    top_p: 1
+
+instructions: |
+  You are a helpful assistant
+  You answer like a pirate with long s'es
+
+tools: []

@@ -1,0 +1,27 @@
+{
+  "definition": {
+    "kind": "prompt",
+    "model": "astra6",
+    "instructions": "You are a helpful support agent. You answer like a pirate with bad teeth",
+    "tools" : [
+        {
+            "type" : "web_search"
+        },
+        {
+            "type" : "function",
+            "name" : "create_support_ticket",
+            "description" : "Creates a support ticket for an employee",
+            "parameters" : {
+                "type" : "object",
+                "properties" : {
+                    "employee_id" : {
+                        "type" : "string",
+                        "description" : "Must be [0-9]{4}"
+                    }
+                },
+                "required" : [ "employee_id" ]
+            }
+        }
+    ]
+  }
+}
