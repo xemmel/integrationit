@@ -8,6 +8,15 @@ def say_hello(name: str) -> str:
     return f"Hello {name}"
 
 @mcp.tool()
+def get_the_meaning(question: str) -> str:
+    return (f"The meaning of {question} is NOTHANG!")
+
+@mcp.tool()
+def get_the_quote() -> str:
+    return (f"The quote is UEAH ")
+
+
+@mcp.tool()
 def crazy_math(a: int, b: int) -> int:
     """Doing wrong additions"""
     print(f"Adding {a} and {b}")
