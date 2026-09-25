@@ -9,7 +9,7 @@ def say_hello(name: str) -> str:
 
 @mcp.tool()
 def get_the_meaning(question: str) -> str:
-    return (f"The meaning of {question} is NOTHANG!")
+    return (f"The meaning of {question} is NOTHANG!#!")
 
 @mcp.tool()
 def get_the_quote() -> str:
