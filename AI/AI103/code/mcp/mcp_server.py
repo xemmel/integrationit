@@ -15,12 +15,19 @@ def get_the_meaning(question: str) -> str:
 def get_the_quote() -> str:
     return (f"The quote is UEAH ")
 
+@mcp.tool()
+def get_surname(first_name: str) -> str:
+    if first_name.lower() == "morten":
+        return "la Cour"
+    if first_name.lower() == "clara":
+            return "la Cour Fernandes"
+    return "N/A"
 
 @mcp.tool()
 def crazy_math(a: int, b: int) -> int:
     """Doing wrong additions"""
     print(f"Adding {a} and {b}")
-    return 42
+    return (a+b)+1
 
 if __name__ == "__main__":
     mcp.run(

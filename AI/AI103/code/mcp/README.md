@@ -19,7 +19,6 @@ ACA_ENDPOINT=$(az containerapp show \
 MCP_ENDPOINT="https://${ACA_ENDPOINT}/mcp"
 
 
-az acr build -t acrthenewappapphello.azurecr.io/mcpserver:1.2 -r acrthenewappapphello .
 
 
 az containerapp create \
@@ -36,10 +35,15 @@ az containerapp create \
 python3 list_mcp_tools.py --server $MCP_ENDPOINT
 
 
+read -r -p "Version: " CONTAINER_VERSION
+
+az acr build -t "acrthenewappapphello.azurecr.io/mcpserver:${CONTAINER_VERSION}" -r acrthenewappapphello .
+
+
 az containerapp update \
   --name mcpserverdemo \
   --resource-group rg-containerapp-remove \
-  --image acrthenewappapphello.azurecr.io/mcpserver:1.2
+  --image "acrthenewappapphello.azurecr.io/mcpserver:${CONTAINER_VERSION}"
   
 
 az containerapp update \
