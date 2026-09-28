@@ -99,3 +99,41 @@ while True:
 
 
 ```
+
+### With Conversations
+
+```python
+
+import os
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects import AIProjectClient
+
+
+project_endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
+deployment = os.environ["FOUNDRY_DEPLOYMENT"]
+
+credential = DefaultAzureCredential()
+
+project_client = AIProjectClient(endpoint=project_endpoint,credential=credential)
+
+client = project_client.get_openai_client()
+
+conversation = client.conversations.create()
+
+while True:
+
+    user_input = input("Input: ")
+    if user_input.lower() == "exit":
+        break
+
+    response = client.responses.create(
+        model=deployment,
+        input=user_input,
+        conversation=conversation.id
+    )
+
+    print(response.output_text)
+
+
+
+```
