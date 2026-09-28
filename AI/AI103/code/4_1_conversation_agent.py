@@ -52,7 +52,10 @@ def main():
                                 "output" : output
                             })
                     if tools_output:
-                        user_input = tools_output
+                        response = openai_client.responses.create(
+                            conversation=conversation.id,
+                            input=tools_output
+                        )
                         continue   
                     break
                 
