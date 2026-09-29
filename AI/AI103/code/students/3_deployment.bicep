@@ -25,6 +25,7 @@ resource foundryService 'Microsoft.CognitiveServices/accounts@2026-07-01' = {
     associatedProjects: [
       foundryProjectName
     ]
+    publicNetworkAccess: 'Enabled'
   }
 }
 
@@ -39,6 +40,7 @@ resource foundryProject 'Microsoft.CognitiveServices/accounts/projects@2026-07-0
   properties: {
     displayName: foundryProjectName
   }
+
 }
 
 // Deployment

@@ -67,6 +67,19 @@ $response.choices.message.content
 
 ```` 
 
+
+### Update existing Foundry Service
+
+```powershell
+
+az resource update `
+  --resource-group $rgName `
+  --name "aif-$appName" `
+  --resource-type "Microsoft.CognitiveServices/accounts" `
+  --set properties.disableLocalAuth=true
+
+```
+
 ### Cleanup
 
 ```powershell
