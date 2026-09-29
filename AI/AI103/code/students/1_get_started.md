@@ -8,8 +8,12 @@ winget install Python.Python.3.14
 
 winget install Microsoft.AzureCLI
 
+
+### If needed
+
 winget install Microsoft.VisualStudioCode
 
+winget install Git.Git
 
 ```
 
@@ -35,6 +39,14 @@ python -m venv devenv
 
 .\devenv\Scripts\Activate.ps1
 
+
+```
+
+### Clone the labs
+
+```powershell
+
+git clone https://github.com/MicrosoftLearning/mslearn-ai-agents.git
 
 ```
 
