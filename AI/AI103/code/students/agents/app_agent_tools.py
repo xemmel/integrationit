@@ -39,11 +39,12 @@ while True:
     if user_input.lower() == "exit":
         break
 
-    response = client.responses.create(
+
+    while True:
+        response = client.responses.create(
         input=user_input,
         conversation=conversation.id
-    )
-    while True:
+        )
         tools_output = []
         for item in response.output:
             print(f"I got an output object of type: {item.type}")
@@ -62,10 +63,7 @@ while True:
                     "output": output
                 })
         if tools_output:
-            response = client.responses.create(
-                input=tools_output,
-                conversation=conversation.id
-            )
+            user_input=tools_output
             continue  
         break
 
