@@ -6,10 +6,16 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 import argparse
 
-from common_file_tools import create_file, file_tools
-from common_support_tools import create_support_case, update_support_case, support_tools
-from common_employee_tools import get_employees, employee_tools, get_employee_maternity_rules
+from common_file_tools import file_functions
+from common_support_tools import support_functions
+from common_employee_tools import employee_functions
 
+
+FUNCTIONS = {
+    **file_functions,
+    **employee_functions,
+    **support_functions
+}
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--agent")
@@ -44,60 +50,17 @@ while True:
             if item.type == "message":
                 print(response.output_text)
             if item.type == "function_call":
-                ## Require a round-trip
-                function_name = item.name
-                arguments = json.loads(item.arguments)
-                print(f"I need to call this function: {function_name}")
-                if function_name == "create_file":
-                    output = create_file(
-                        fileName=arguments["fileName"],
-                        content=arguments["content"])
-                    tools_output.append(
-                        {
-                            "type" : "function_call_output",
-                            "call_id" : item.call_id,
-                            "output" : output
-                        }
-                    )
-                if function_name == "create_support_case":
-                    output = create_support_case(emp_id=arguments["emp_id"])
-                    tools_output.append(
-                        {
-                            "type" : "function_call_output",
-                            "call_id" : item.call_id,
-                            "output" : output
-                        }
-                    )
-                if function_name == "update_support_case":
-                    output = update_support_case(
-                            case_id=arguments["case_id"],
-                            content=arguments["content"])
-                    tools_output.append(
-                        {
-                            "type" : "function_call_output",
-                            "call_id" : item.call_id,
-                            "output" : output
-                        }
-                    )                    
-                if function_name == "get_employees":
-                    output = get_employees()
-                    tools_output.append(
-                        {
-                            "type" : "function_call_output",
-                            "call_id" : item.call_id,
-                            "output" : json.dumps(output)
-                        }
-                    )    
-                if function_name == "get_employee_maternity_rules":
-                                    output = get_employee_maternity_rules()
-                                    tools_output.append(
-                                        {
-                                            "type" : "function_call_output",
-                                            "call_id" : item.call_id,
-                                            "output" : output
-                                        }
-                                    )    
-                ## Round trip!!
+              function = FUNCTIONS[item.name]
+              arguments = json.loads(item.arguments)
+
+              output = function(**arguments)
+              if not isinstance(output, str):
+                output = json.dumps(output)
+              tools_output.append({
+                    "type": "function_call_output",
+                    "call_id": item.call_id,
+                    "output": output
+                })
         if tools_output:
             response = client.responses.create(
                 input=tools_output,

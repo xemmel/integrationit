@@ -36,3 +36,8 @@ file_tools = [
             }
         }
 ]
+
+file_functions = {
+    tool["name"]: globals()[tool["name"]]
+    for tool in file_tools
+}

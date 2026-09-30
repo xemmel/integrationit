@@ -102,3 +102,9 @@ employee_tools = [
                             }
             }
 ]
+
+
+employee_functions = {
+    tool["name"]: globals()[tool["name"]]
+    for tool in employee_tools
+}

@@ -55,3 +55,8 @@ support_tools = [
                         }
                     }
 ]
+
+support_functions = {
+    tool["name"]: globals()[tool["name"]]
+    for tool in support_tools
+}
