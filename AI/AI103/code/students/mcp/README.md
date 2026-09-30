@@ -2,6 +2,10 @@
 
 ```powershell
 
+cd c:\code\integration
+
+git pull 
+
 cd c:\code\integrationit\AI\AI103\code\students\mcp
 
 python .\create_agent.py `
