@@ -17,6 +17,15 @@ winget install Git.Git
 
 ```
 
+### Clone the MS labs
+
+```powershell
+
+cd c:\code
+git clone https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+
+```
+
 ### Login to Azure CLI
 
 ```powershell

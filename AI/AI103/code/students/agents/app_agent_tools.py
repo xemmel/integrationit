@@ -39,10 +39,10 @@ while True:
     if user_input.lower() == "exit":
         break
 
-
+    input_data = user_input
     while True:
         response = client.responses.create(
-        input=user_input,
+        input=input_data,
         conversation=conversation.id
         )
         tools_output = []
@@ -51,7 +51,7 @@ while True:
             if item.type == "message":
                 print(response.output_text)
             if item.type == "function_call":
-              function = FUNCTIONS[item.name]
+              function = FUNCTIONS.get(item.name)
               arguments = json.loads(item.arguments)
 
               output = function(**arguments)
@@ -63,7 +63,7 @@ while True:
                     "output": output
                 })
         if tools_output:
-            user_input=tools_output
+            input_data=tools_output
             continue  
         break
 
