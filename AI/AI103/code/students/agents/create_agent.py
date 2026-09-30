@@ -22,7 +22,11 @@ agent_name = args.name
 deployment = args.deployment
 instructions = args.instructions
 
-tools = [ *file_tools, *employee_tools, *support_tools ]
+web_tools = {
+    "type" : "web_search"
+}
+
+tools = [ *file_tools, *employee_tools, *support_tools, web_tools ]
 
 project_endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
 credential = DefaultAzureCredential()
