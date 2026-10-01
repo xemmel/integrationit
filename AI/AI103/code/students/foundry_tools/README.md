@@ -7,6 +7,8 @@ git clone https://github.com/MicrosoftLearning/mslearn-ai-agents.git
 
  $ENV:FOUNDRY_TOOLS_ENDPOINT="https://ai103mlcfinal.services.ai.azure.com/"
 
+pip install azure.ai.textanalytics
+
 ```
 
 ### PII
