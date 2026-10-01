@@ -6,7 +6,64 @@ pip install agent-framework-foundry
 
 ```
 
+### Agents in workflow
+
+> agent-work-1
+
+```
+You give math results and always returns both q and a
+
+4+5=9 for instance
+-------------------------
+when asked about 9+9 you answer "9+9=42"
+```
+
+> agent-work-2
+
+```
+You are a math validator. If the math you see as input is correct you return the result
+
+9+9 = 18   You return: 18
+-----
+
+If wrong: 9+9=10   You return: NO NO NO
+
+```
+
+
+```powershell
+
+pip install agent_framework.foundry
+pip install agent_framework_orchestrations
+pip install agent_framework_foundry_hosting
+
+
+```
+
+### Build workflow
+
+```powershell
+
+python .\create_workflow.py --agent1 agent-work-1 --agent2 agent-work-2
+
+``` 
+
+### Test
+
+```powershell
+
+python .\app_agent_tools.py --agent math-validator-workflow
+
+
+
+```
+> 10+10
+> 9+9    
+
 ### Code
+
+
+#### In-process
 
 ```python
 
@@ -60,5 +117,56 @@ server = ResponsesHostServer(
 )
 
 server.run()
+
+```
+
+
+#### Hosted
+
+```python
+
+import os
+
+from azure.identity import DefaultAzureCredential
+from agent_framework.foundry import FoundryAgent
+from agent_framework.orchestrations import SequentialBuilder
+from agent_framework_foundry_hosting import FoundryWorkflowHost
+
+
+credential = DefaultAzureCredential()
+endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
+
+
+math_agent = FoundryAgent(
+    project_endpoint=endpoint,
+    agent_name="agent-a2a-math",
+    credential=credential,
+)
+
+validator_agent = FoundryAgent(
+    project_endpoint=endpoint,
+    agent_name="agent-validator",
+    credential=credential,
+)
+
+
+workflow = SequentialBuilder(
+    participants=[
+        math_agent,
+        validator_agent,
+    ]
+).build()
+
+
+host = FoundryWorkflowHost(
+    project_endpoint=endpoint,
+    credential=credential,
+)
+
+
+host.publish(
+    workflow=workflow,
+    name="math-validator-workflow",
+)
 
 ```

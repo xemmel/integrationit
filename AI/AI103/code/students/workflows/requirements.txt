@@ -1,0 +1,5 @@
+azure-identity
+azure-ai-projects
+agent-framework
+agent-framework-foundry
+agent-framework-foundry-hosting
