@@ -39,6 +39,27 @@ pip install agent_framework_foundry_hosting
 
 
 ```
+
+### Build workflow
+
+```powershell
+
+python .\create_workflow.py --agent1 agent-work-1 --agent2 agent-work-2
+
+``` 
+
+### Test
+
+```powershell
+
+python .\app_agent_tools.py --agent math-validator-workflow
+
+
+
+```
+> 10+10
+> 9+9    
+
 ### Code
 
 

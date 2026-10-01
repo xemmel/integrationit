@@ -30,7 +30,8 @@ workflow = SequentialBuilder(
     participants=[
         agent1,
         agent2,
-    ]
+    ],
+    ## chain_only_agent_responses=False,
 ).build()
 
 
