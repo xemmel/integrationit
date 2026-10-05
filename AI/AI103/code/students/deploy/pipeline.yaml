@@ -1,0 +1,40 @@
+trigger:
+  - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: serviceConnection
+    value: ai103test
+  - name: resourceGroupName
+    value: rg-ai103-fromdevops-prod
+  - name: location
+    value: swedencentral
+  - name: appName
+    value: ai103devopsmlc
+  - name: env
+    value: prod
+steps:
+  - script: echo "Hello students!!!"
+  - task: AzureCLI@2
+    displayName: 'Creating Resource Group'
+    inputs:
+      azureSubscription: $(serviceConnection)
+      scriptType: pscore
+      scriptLocation: inlineScript
+      inlineScript: |
+         az group create --name $(resourceGroupName) --location $(location)
+  
+  - task: BicepDeploy@0
+    displayName: 'Deploy infrastructure'
+    inputs:
+      type: 'deployment'
+      scope: 'resourceGroup'
+      azureResourceManagerConnection: $(serviceConnection)
+      subscriptionId: '9bc198aa-089c-4698-a7ef-8af058b48d90'
+      resourceGroupName: $(resourceGroupName)
+      templateFile: './infrastructure.bicep'
+      parameters: |
+        appName: $(appName)
+        env: $(env)
