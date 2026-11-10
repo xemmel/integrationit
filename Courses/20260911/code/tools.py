@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-def create_file(file_name: str, content: str):
+def create_local_file(file_name: str, content: str):
     print(f"Creating file: {file_name}")
     with open(file_name, "w") as f:
         f.write(content)
@@ -15,9 +15,9 @@ def update_support_case(support_case_id: str,content: str):
     print(f"Updating support case: {support_case_id}. Content_: {content}")
     return f"Support case {support_case_id} updated"
 
-create_file_tool = {
+create_local_file_tool = {
     "type" : "function",
-    "name" : "create_file",
+    "name" : "create_local_file",
     "description" : """
     A method for creating files locally
     ----------

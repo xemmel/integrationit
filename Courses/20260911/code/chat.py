@@ -1,6 +1,6 @@
 import os
 import json
-from tools import create_file, create_support_case, update_support_case, create_file_tool, create_support_case_tool,update_support_case_tool
+from tools import create_local_file, create_support_case, update_support_case, create_local_file_tool, create_support_case_tool,update_support_case_tool
 from argparse import ArgumentParser
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
@@ -49,12 +49,14 @@ while True:
                 conversation=conversation.id,
                 )
         
-        ## breakpoint()
+        ##breakpoint()
         tools_output = []
         function_response = None
         for item in response.output:
             item_type = item.type
             print(f"Item type: {item_type}")
+
+
             if item_type == "message":
                 ## breakpoint()
                 print(item.content[0].text)
@@ -65,9 +67,9 @@ while True:
                 ##breakpoint()
                 function_name = item.name
                 arguments = json.loads(item.arguments)
-                if function_name == "create_file":
+                if function_name == "create_local_file":
                     ## breakpoint()
-                    function_response = create_file(file_name=arguments["file_name"],content=arguments["content"])
+                    function_response = create_local_file(file_name=arguments["file_name"],content=arguments["content"])
                 if function_name == "create_support_case":
                                     ## breakpoint()
                                     function_response = create_support_case(employee_id=arguments["employee_id"])
