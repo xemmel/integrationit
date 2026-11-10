@@ -4,12 +4,14 @@ from tools import create_file, create_support_case, update_support_case, create_
 from argparse import ArgumentParser
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
-
+from common import get_project_client
 
 argparser = ArgumentParser()
 
 argparser.add_argument("--conversationid")
 argparser.add_argument("--instructions")
+
+argparser.add_argument("--agent")
 argparser.add_argument("--websearch", action="store_true")
 argparser.add_argument("--customtools", action="store_true")
 
@@ -18,25 +20,17 @@ args = argparser.parse_args()
 
 conversationid = args.conversationid
 instructions = args.instructions or "You are a normal polite chat bot"
+##model = args.model or "fastcheap"
+agent = args.agent
 ## print(instructions)
 
-tools = []
-
-if (args.websearch):
-    print("adding web_search")
-    tools.append({ "type" : "web_search" })
-if (args.customtools):
-    print("adding custom_tools")
-    tools.append(create_file_tool)
-    tools.append(create_support_case_tool)
-    tools.append(update_support_case_tool)
 
 
 
-credential = DefaultAzureCredential()
-project_endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
-project_client = AIProjectClient(endpoint=project_endpoint,credential=credential)
-client = project_client.get_openai_client()
+project_client = get_project_client()
+
+
+client = project_client.get_openai_client(agent_name=agent)
 
 if conversationid:
     conversation = client.conversations.retrieve(conversation_id=conversationid)
@@ -51,11 +45,9 @@ while True:
     current_input = user_input
     while True:
         response = client.responses.create(
-                model="fastcheap",
                 input=current_input,
                 conversation=conversation.id,
-                instructions=instructions,
-                tools=tools)
+                )
         
         ## breakpoint()
         tools_output = []
@@ -67,7 +59,10 @@ while True:
                 ## breakpoint()
                 print(item.content[0].text)
             if item_type == "function_call":
-                ## breakpoint()
+                if item.status == "in_progress":
+                      print("Incomplete")
+                      continue
+                ##breakpoint()
                 function_name = item.name
                 arguments = json.loads(item.arguments)
                 if function_name == "create_file":
