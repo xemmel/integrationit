@@ -12,6 +12,8 @@ python .\vectorstore.py --name "emp-vector-store2"
 
 python .\agent.py --agent_name agent4 --model large --customtools --instructions "You are a chat bot. You have access to employee data via. RAG" --vector_store_id vs_vpDxbtaMBpusj1kmC5bNm1YY
 
+## MCP
 
+python .\agent.py --agent_name agentmcp5 --model large --mcp_url "https://aca-ai103mlcmcp.politeplant-a3834678.swedencentral.azurecontainerapps.io/mcp"
 
 ```
