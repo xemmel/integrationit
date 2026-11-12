@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY . /code
 
-CMD ["fastapi", "run", "mcp_server.py", "--port", "80"]
+CMD ["fastapi", "run", "webapi.py", "--port", "80"]
